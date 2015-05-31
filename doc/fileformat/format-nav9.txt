@@ -1,0 +1,37 @@
+File Format ID: nav9
+
+Format Description Creation Date: 2011-05-19
+
+File Type: ASCII, whitespace-delimited values
+
+Record Format:
+
+Example Record:
+03 01 2009	0000  32 42.4610-117 14.2030		pc10	0.5
+
+where:
+     03        2-digit month
+     01        2-digit day of month       
+     2009      4-digit year
+     0000      minutes (zero-padded)
+     32        Latitude Integer Degrees [-90, 90]
+     42.4610   Latitude Decimal Minutes [0, 59.9999]
+     -117      Longitude Integer Degrees [-180, 180]
+     14.2030   Longitude Decimal Minutes [0, 59.9999]
+     pc10      Number of GPS Satellites
+     0.5       Unknown
+
+Note that there may be no whitespace between latitude decimal minutes 
+and longitude integer degrees if longitude is negative.
+
+Data Format Description:
+
+Example Content:
+03 01 2009	0000  32 42.4610-117 14.2030		pc10	0.5
+03 01 2009	0001  32 42.4610-117 14.2040		pc10	0.5
+03 01 2009	0002  32 42.4610-117 14.2040		pc10	0.5
+03 01 2009	0003  32 42.4610-117 14.2030		pc10	0.5
+03 01 2009	0004  32 42.4610-117 14.2040		pc10	0.5
+03 01 2009	0005  32 42.4610-117 14.2020		pc10	0.5
+
+References: None

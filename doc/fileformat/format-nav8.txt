@@ -1,0 +1,49 @@
+File Format ID: nav8
+
+Format Description Creation Date: 2011-05-19
+
+File Type: ASCII, whitespace-delimited values
+
+Record Format: 
+
+Example Record: 2009 200 17 00 07 686 *gpo  21.315698 -157.886312  0.90  0.00 208.40 09 1 68.38 -0.29  0.50  0.03
+
+where:
+     2009         4-digit year
+     200          Julian day
+     17           2-digit hours [24-hour clock]
+     00           2-digit minutes
+     07           2-digit integer seconds
+     686          3-digit integer milliseconds
+     *gpo         System logging code
+     21.315698    Latitude [degrees] [-90, 90]
+     -157.886312  Longitude [degrees] [-180, 180]
+     0.90         Horizontal Dilution of Precision (HDOP) [dimensionless]
+     0.00         Speed over ground (SOG) [knots]
+     208.40       True course over ground (COG) [degrees, clockwise from North]
+     09           Number of satellites being tracked
+     1            Fix quality: 0 = fix not available or invalid
+                               1 = GPS Standard Positioning Service (SPS) mode, fix valid
+                               2 = differential GPS (DGPS), SPS mode, fix valid
+                               3 = GPS Precise Point Positioning (PPS) mode, fix valid
+                               4 = Real Time Kinematic (RTK). Satellite system used in
+                                    RTK mode with fixed integers.
+                               5 = Float RTK.  Satellite system used in RTK mode with
+                                    floating integers.
+                               6 = Estimated (dead reckoning) mode
+                               7 = Manual input mode
+                               8 = Simulator mode
+     68.38        True Heading [degrees, clockwise from North] 
+     -0.29        Roll Angle [degrees, unknown sense of rotation]
+     0.50         Pitch Angle [degrees, unknown sense of rotation]
+     0.03         Heave Angle [degrees, unknown sense of rotation]
+
+Data Format Description: File contains time-series of successive records as defined above.
+
+Example Content:
+2009 200 17 00 07 686 *gpo  21.315698 -157.886312  0.90  0.00 208.40 09 1 68.38 -0.29  0.50  0.03
+2009 200 17 00 08 686 *gpo  21.315698 -157.886312  0.90  0.00 220.70 09 1 68.35 -0.31  0.48  0.02
+2009 200 17 00 09 686 *gpo  21.315698 -157.886312  0.90  0.00 222.80 09 1 68.32 -0.32  0.47  0.02
+2009 200 17 00 10 686 *gpo  21.315698 -157.886312  0.90  0.00 221.50 09 1 68.29 -0.33  0.46  0.02
+
+References: None

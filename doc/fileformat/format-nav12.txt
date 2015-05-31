@@ -1,0 +1,136 @@
+File Format ID: nav12
+
+Format Description Creation Date: 2011-05-19
+
+File Type: ASCII, whitespace-delimited and comma-separated values
+
+Record Format: National Marine Electronics Association (NMEA) 0183 string with device id
+and external, colon-separated datetime stamp.
+
+Data Format Description:
+The file contains GGA, GLL, GSA, VTG, and ZDA strings, alternating line-by-line.  Each
+NMEA record is prefixed by a device id and an external datetime stamp.
+
+Example Record: cnav	2010:258:01:05:34.0656	$GPZDA,235959.00,14,9,2010,+0,+0*58
+
+where:
+     cnav                      Device ID
+     2010:258:01:05:34.0656    External datetime stamp (source unknown)
+                                 2010         4-digit year
+                                 258          Julian day
+                                 01           2-digit hour
+                                 05           2-digit minute
+                                 34.0656      decimal seconds
+     $GPZDA etc                NMEA record (see definitions below)
+
+Definitions follow.
+
+Definition of GGA:
+GGA - essential fix data which provide 3D location and quality data.
+
+Example Record: $GPGGA,123519,4807.038,N,01131.000,E,1,08,0.9,545.4,M,46.9,M,,*47
+
+where:
+     GGA          Global Positioning System Fix Data
+     123519       Fix taken at 12:35:19 UTC
+     4807.038,N   Latitude 48 degrees 07.038 minutes North
+     01131.000,E  Longitude 11 degrees 31.000 minutes East
+     1            Fix quality: 0 = fix not available or invalid
+                               1 = GPS Standard Positioning Service (SPS) mode, fix valid
+                               2 = differential GPS (DGPS), SPS mode, fix valid
+                               3 = GPS Precise Point Positioning (PPS) mode, fix valid
+                               4 = Real Time Kinematic (RTK). Satellite system used in
+                                    RTK mode with fixed integers.
+                               5 = Float RTK.  Satellite system used in RTK mode with
+                                    floating integers.
+                               6 = Estimated (dead reckoning) mode
+                               7 = Manual input mode
+                               8 = Simulator mode
+     08           Number of satellites being tracked
+     0.9          Horizontal dilution of precision (HDOP)
+     545.4,M      Altitude above mean sea level [meters]
+     46.9,M       Height of geoid (mean sea level) above WGS84
+                      ellipsoid [meters]
+     (empty field) Time in seconds since last DGPS update
+     (empty field) DGPS station ID number
+     *47          Checksum, always begins with *
+
+If the height of geoid is missing then the altitude should be suspect. Some
+non-standard implementations report altitude with respect to the ellipsoid
+rather than geoid altitude. Some units do not report negative altitudes at
+all. This is the only sentence that reports altitude.
+
+Definition of GLL:
+GLL - Geographic Position, Latitude/Longitude and Time
+
+Example Record: $GPGLL,2118.98295,N,15753.17431,W,000001.00,A*17
+
+where:
+     2118.98295,N    Latitude 21 degrees 18.98295 minutes North
+     15753.17431,W   Longitude 157 degrees 53.17431 minutes West
+     000001.00       Fix taken at 00:00:01.00 UTC
+     A               Data valid
+     *17             Checksum, always begins with *
+
+Definition of GSA:
+GSA - DOP and Active Satellites
+
+Example Record: $GPGSA,A,3,,5,29,27,12,,30,9,2,21,,,3.6,1.2,3.3*07
+
+where:
+     A              Mode: M = Manual, forced to operate in 2D or 3D
+                          A = Automatic, 3D/2D
+     3              Mode: 1 = Fix not available
+                          2 = 2D fix
+                          3 = 3D fix
+     (fields 3-14)  Space vehicle (SV) IDs of GPS satellites used in position fix 
+                      (null for unused fields)
+     3.6            Positional Dilution of Precision (PDOP)
+     1.2            Horizontal Dilution of Precision (HDOP)
+     3.3            Vertical Dilution of Precision (VDOP)
+     *07            Checksum, always begins with *
+
+Definition of VTG:
+VTG - Velocity made good. The gps receiver may use the LC prefix instead of GP
+if it is emulating Loran output.
+
+Example Record: $GPVTG,054.7,T,034.4,M,005.5,N,010.2,K*48
+
+where:
+     VTG        Track made good and ground speed
+     054.7,T    True track made good [degrees, clockwise from North]
+     034.4,M    Magnetic track made good
+     005.5,N    Ground speed [knots]
+     010.2,K    Ground speed [kilometers per hour]
+     *48        Checksum, begins with *
+
+Definition of ZDA:
+ZDA - Date and Time
+
+Example Record: $GPZDA,201530.18,04,07,2002,01,00*60
+
+where:
+     201530.18  hours, minutes, and seconds expressed as hhmmss.ss
+                 20       2-digit hour [24 hour clock]
+                 15       2-digit minute
+                 30.18    decimal seconds
+     04         2-digit day,
+     07         2-digit month
+     2002       4-digit year
+     01         2-digit local timezone hours: -13 to 13
+     00         2-digit local timezone minutes: 0 to 59
+     *60        Checksum, begins with *
+
+Example Content:
+cnav	2010:258:00:00:00.0656	$GPZDA,235959.00,14,9,2010,+0,+0*58
+cnav	2010:258:00:00:00.6557	$GPGGA,000000.00,2118.98294,N,15753.17430,W,2,8,1.2,25.62,M,6.61,M,10,0108*4C
+cnav	2010:258:00:00:00.7676	$GPGLL,2118.98293,N,15753.17429,W,000000.00,A*19
+cnav	2010:258:00:00:00.8637	$GPGSA,A,3,,5,29,27,12,,30,9,2,21,,,3.6,1.2,3.3*07
+cnav	2010:258:00:00:00.9437	$GPVTG,293.2,T,,M,0.05,N,0.09,K*66
+cnav	2010:258:00:00:01.0227	$GPZDA,000000.00,15,9,2010,+0,+0*58
+cnav	2010:258:00:00:02.0127	$GPGGA,000001.00,2118.98295,N,15753.17431,W,2,8,1.2,25.61,M,6.61,M,10,0108*4E
+cnav	2010:258:00:00:02.1247	$GPGLL,2118.98295,N,15753.17431,W,000001.00,A*17
+cnav	2010:258:00:00:02.2367	$GPGSA,A,3,,5,29,27,12,,30,9,2,21,,,3.6,1.2,3.3*07
+cnav	2010:258:00:00:02.3007	$GPVTG,305.8,T,,M,0.04,N,0.08,K*62
+
+References: www.nmea.org

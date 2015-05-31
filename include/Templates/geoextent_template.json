@@ -1,0 +1,9 @@
+{
+  "cruise_extent": {
+    "id": "$CRUISEID",
+    "west": "$WESTBOUNDLONGITUDE",
+    "east": "$EASTBOUNDLONGITUDE",
+    "south": "$SOUTHBOUNDLATITUDE", 
+    "north": "$NORTHBOUNDLATITUDE"
+  }
+}

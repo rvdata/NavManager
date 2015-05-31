@@ -1,0 +1,152 @@
+File Format ID: r2rnav
+
+Format Description Creation Date: 2011-03-15
+Last Revised: 2013-05-07
+
+File Type: ASCII, tab-separated values
+
+Record Format: 
+
+Data Format Description:
+Introduction:
+
+We define three R2R navigation standard products to be produced from each cruise: 
+NavBestRes, Nav1Min, and NavControl. These three products specify the ship's
+time-stamped positions. The first three columns of each product contain (1) a 
+single string for date and time, (2) longitude, and (3) latitude. The NavBestRes 
+product is a quality-controlled product based on the ship's best GPS antenna
+position files provided in the ship's data distribution. It includes additional
+columns: (4) GPS quality indicator (defined by NMEA-0183), (5) number of GPS 
+satellites, (6) horizontal dilution of precision, and (7) the GPS antenna height 
+above/below mean sea level [meters]. "BestRes" refers to the fact that this 
+product represents the highest resolution in time and allows for differences 
+among vessels (or among legacy data) in the time interval used for recording the 
+ship's position. Common practice among vessels is to collect position data at 
+the maximum rate capable of today's marine GPS receivers: once-per-second. Times
+are specified at one-minute intervals in the Nav1Min product. The NavControl 
+product is a subset of the Nav1Min product, just enough points to draw a 
+ship-track on a map.
+
+Columns 8 and 9 of the NavBestRes product contain instantaneous 
+speed-over-ground and course-over-ground, respectively.  The instantaneous 
+speed-over-ground has units of m/s, and is computed from single-differences
+of successive positions (from the current position to the next position).  
+Course and speed are computed on the WGS-84 reference ellipsoid using 
+Vincenty's formula.  The course-over-ground is measured in degrees clockwise 
+from north.
+
+Similarly, columns 4 and 5 of the Nav1Min product contain the same 
+instantaneous speed-over-ground and course-over-ground as given for the 
+identical record in the NavBestRes product.  In other words, these are
+preserved from the NavBestRes product and not recomputed using 
+once-per-minute positions.
+
+Date and time:
+
+The ISO8601 time standard defines the order of date and time to be year, 
+month, day, hour, minute, second, followed by a time-zone identifier. 
+Section 6.2.3 of RFC5424 goes a step farther and specifies the characters 
+used to separate these quantities and requires the inclusion of fractions 
+of second, if known. We adopt these standards and add the additional 
+requirement that UTC time be used in all R2R navigation standard products.
+
+An example date and time specified in this format is:
+
+2009-08-27T13:30:00.000Z
+
+The year is specified with four digits. The month, day, hour, minute, and 
+integer number of seconds are specified with two digits. The number of 
+digits to the right of the decimal place depends on the precision reported 
+in fractions of a second. The day refers to day of month. The 24-hour clock 
+is used to specify the hour. The hyphen ("-") is used between year and 
+month, and between month and day. The capital letter "T" is used between 
+date and time. The colon (":") is used between hour and minute, and between 
+minute and second. The trailing capital letter "Z" specifies UTC time. No 
+whitespace is allowed in this date and time format.
+
+Ship's Position:
+
+The ship's position is specified in units of decimal degrees, longitude
+followed by latitude. The bounds for longitude and latitude are as 
+follows: -180 <= lon < 180 and -90 <= lat <= 90. We reproduce the GPS 
+receiver precision. For example, if the longitude is recorded in the ship's
+data distribution to the nearest 0.0001 arc-minute, the longitude in the 
+standard product will be reported to the nearest 0.000001 degrees (= 0.0001 
+arc-minute * 1/60 degree-per-arc-minute). The datum in common use by marine 
+GPS receivers is WGS84.
+
+NMEA-0183 definition of GPS quality indicator:
+
+The National Marine Electronics Association has defined the following values 
+for the GPS quality indicator:
+
+0 = fix not available or invalid
+1 = GPS Standard Positioning Service (SPS) mode, fix valid
+2 = differential GPS, SPS mode, fix valid
+3 = GPS Precise Positioning Service (PPS) mode, fix valid
+4 = Real Time Kinematic (RTK). Satellite system used in RTK mode with fixed 
+integers
+5 = Float RTK. Satellite system used in RTK mode with floating integers
+6 = Estimated (dead reckoning) mode
+7 = Manual input mode
+8 = Simulator mode
+
+Flagging of bad positions in NavBestRes format:
+
+Here, a bad position is defined as a position that results in a physically 
+unreasonable horizontal acceleration (for a ship, approx. greater than 
+1 m/s^2), a record with a poor GPS quality indicator (an invalid fix or 
+an estimate based on dead reckoning), fewer than 4 satellites, or a record 
+containing a duplicate or earlier date/time.  It must also be remembered 
+that the GPS horizontal position uncertainty for marine antennas is 
+typically no better than 1 meter.  A record containing a bad position will 
+be flagged with a leading pound "#" sign.
+
+(Bad positions will not be included in the Nav1Min and NavControl standard 
+products and so flagging is unnecessary.)
+
+Header records:
+
+Each of the three products contains a three-line header.  Each header line
+is prefixed by two forward slashes "//".  The first header record is a
+tab-delimited list of column names with units of measure (if any).  The
+second header record is the URI to this document.  The third header record
+is the creation date of the file.
+
+File naming convention:
+
+The file naming convention is to use cruise ID, underscore ("_"), lowercase 
+"bestres", "1min", or "control", followed by the filename extension 
+".r2rnav" (all lowercase). An example for a cruise on the R/V Roger Revelle 
+with a cruise ID of RR1103 is:
+
+NavBestRes product: RR1103_bestres.r2rnav
+Nav1Min product: RR1103_1min.r2rnav
+NavControl product: RR1103_control.r2rnav
+
+Example Content:
+NavBestRes:
+
+2011-02-26T08:22:14.00Z	121.995782	25.162922	2	8	2.3	26	5.95	120.187
+2011-02-26T08:22:15.00Z	121.995833	25.162895	2	8	2.3	26	6.09	120.611
+2011-02-26T08:22:16.00Z	121.995885	25.162867	2	8	2.3	26	5.87	124.479
+2011-02-26T08:22:17.00Z	121.995933	25.162837	2	8	2.3	26	5.67	131.653
+2011-02-26T08:22:18.00Z	121.995975	25.162803	2	8	2.3	26	5.74	132.479
+
+Nav1Min:
+
+2011-02-26T08:22:14.00Z	121.995782	25.162922	5.95	120.187
+2011-02-26T08:23:00.00Z	121.997828	25.161395	5.74	132.478
+2011-02-26T08:24:00.00Z	122.000193	25.159007	5.92	138.415
+2011-02-26T08:25:00.00Z	122.002507	25.156533	5.99	142.693
+2011-02-26T08:26:00.00Z	122.004700	25.153957	5.79	139.906
+
+NavControl:
+
+2011-02-26T08:22:14.00Z	121.995782	25.162922
+2011-02-26T08:40:00.00Z	122.042957	25.123002
+2011-02-26T09:00:00.00Z	122.117362	25.110655
+2011-02-26T10:49:00.00Z	122.146143	24.841670
+2011-02-26T11:19:00.00Z	122.198682	24.765478
+
+References: www.rvdata.us

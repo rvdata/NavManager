@@ -1,0 +1,99 @@
+File Format ID: nav3
+
+Format Description Creation Date: 2011-05-19
+
+File Type: ASCII, comma-separated values
+
+Record Format: National Marine Electronics Association (NMEA) 0183 string with
+external datetime stamp.
+
+Data Format Description:
+The file contains GLL, VTG, and GGA strings prefixed by an external datetime stamp.
+
+Example Record: 03/15/2010,14:08:45.876,$GPGLL,2118.98295,N,15753.17431,W,140844.00,A*17
+
+where:
+     03/15/2010     Date (source unknown), UTC
+                      03   = 2-digit month
+                      15   = 2-digit day of month
+                      2010 = 4-digit year
+     14:08:45.876   Time (source unknown), UTC
+                      14     = 2-digit hour [24-hour clock]
+                      08     = 2-digit minute
+                      45.876 = decimal seconds
+     $GPGLL etc     NMEA record (see definition below) [truncated!]
+
+Definitions follow.
+
+Definition of GLL:
+GLL - Geographic Position, Latitude/Longitude and Time
+
+Example Record: $GPGLL,2118.98295,N,15753.17431,W,140844.00,A*17
+
+where:
+     2118.98295,N    Latitude 21 degrees 18.98295 minutes North
+     15753.17431,W   Longitude 157 degrees 53.17431 minutes West
+     140844.00       Fix taken at 14:08:44.00 UTC
+     A               Data valid
+     *17             Checksum, always begins with *
+
+Definition of VTG:
+VTG - Velocity made good. The gps receiver may use the LC prefix instead of GP
+if it is emulating Loran output.
+
+Example Record: $GPVTG,054.7,T,034.4,M,005.5,N,010.2,K*48
+
+where:
+     VTG        Track made good and ground speed
+     054.7,T    True track made good [degrees, clockwise from North]
+     034.4,M    Magnetic track made good
+     005.5,N    Ground speed [knots]
+     010.2,K    Ground speed [kilometers per hour]
+     *48        Checksum, begins with *
+
+Definition of GGA:
+GGA - essential fix data which provide 3D location and quality data.
+
+Example Record: $GPGGA,123519,4807.038,N,01131.000,E,1,08,0.9,545.4,M,46.9,M,,*47
+
+where:
+     GGA          Global Positioning System Fix Data
+     123519       Fix taken at 12:35:19 UTC
+     4807.038,N   Latitude 48 degrees 07.038 minutes North
+     01131.000,E  Longitude 11 degrees 31.000 minutes East
+     1            Fix quality: 0 = fix not available or invalid
+                               1 = GPS Standard Positioning Service (SPS) mode, fix valid
+                               2 = differential GPS (DGPS), SPS mode, fix valid
+                               3 = GPS Precise Point Positioning (PPS) mode, fix valid
+                               4 = Real Time Kinematic (RTK). Satellite system used in
+                                    RTK mode with fixed integers.
+                               5 = Float RTK.  Satellite system used in RTK mode with
+                                    floating integers.
+                               6 = Estimated (dead reckoning) mode
+                               7 = Manual input mode
+                               8 = Simulator mode
+     08           Number of satellites being tracked
+     0.9          Horizontal dilution of precision (HDOP)
+     545.4,M      Altitude above mean sea level [meters]
+     46.9,M       Height of geoid (mean sea level) above WGS84
+                      ellipsoid [meters]
+     (empty field) Time in seconds since last DGPS update
+     (empty field) DGPS station ID number
+     *47          Checksum, always begins with *
+
+If the height of geoid is missing then the altitude should be suspect. Some
+non-standard implementations report altitude with respect to the ellipsoid
+rather than geoid altitude. Some units do not report negative altitudes at
+all. This is the only sentence that reports altitude.
+
+Example Content:
+09/16/2010,13:12:09.546,$GPGLL,4646.622,N,09204.105,W
+09/16/2010,13:12:19.640,$GPVTG,122,T,123,M,8.9,N,16.4,K
+09/16/2010,13:12:29.687,$GPVTG,122,T,123,M,8.9,N,16.4,K
+09/16/2010,13:12:39.609,$GPVTG,121,T,122,M,8.8,N,16.3,K
+09/16/2010,13:12:49.531,$GPGLL,4646.570,N,09203.984,W
+09/16/2010,13:12:59.531,$GPGLL,4646.558,N,09203.954,W
+09/16/2010,13:13:09.609,$GPVTG,123,T,124,M,8.8,N,16.2,K
+09/16/2010,13:13:19.640,$GPVTG,122,T,123,M,8.8,N,16.2,K
+
+References: www.nmea.org

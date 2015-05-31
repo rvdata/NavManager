@@ -1,0 +1,131 @@
+File Format ID: nav20
+
+Format Description Creation Date: 2014-03-27
+
+File Type: ASCII, whitespace-delimited and comma-separated values
+
+Record Format: National Marine Electronics Association (NMEA) 0183 string with device id
+and external, colon-separated datetime stamp.
+
+Data Format Description:
+The file contains GGA, RMC, VTG, and ZDA strings, alternating line-by-line.  Each NMEA 
+record is prefixed by a datatype id, an external datetime stamp, and device tag.
+
+Example Record:
+NAV 2013/11/20 05:00:04.561 GPS $GPGGA,050004.00,4131.43841,N,07040.33593,W,2,7,1.0,28.99,M,-30.68,M,10,0907*5E
+
+where:
+     NAV                       Datatype ID
+     2013/11/20 05:00:04.561   External datetime stamp (source unknown)
+                                 2013         4-digit year
+                                 11           2-digit month
+                                 20           2-digit day of month
+                                 05           2-digit hour [24-hour clock]
+                                 00           2-digit minute
+                                 04.561       decimal seconds
+     GPS                       Device tag
+     $GPGGA etc                NMEA record (see definitions below)
+
+Definitions follow.
+
+Definition of GGA:
+GGA - essential fix data which provide 3D location and quality data.
+
+Example Record: $GPGGA,050004.00,4131.43841,N,07040.33593,W,2,7,1.0,28.99,M,-30.68,M,10,0907*5E
+
+where:
+     GGA            Global Positioning System Fix Data
+     050004.00      Fix taken at 05:00:04.00 UTC
+     4131.43841,N   Latitude 41 degrees 31.43841 minutes North
+     07040.33593,W  Longitude 70 degrees 40.33593 minutes West
+     2              Fix quality: 0 = fix not available or invalid
+                                 1 = GPS Standard Positioning Service (SPS) mode, fix valid
+                                 2 = differential GPS (DGPS), SPS mode, fix valid
+                                 3 = GPS Precise Point Positioning (PPS) mode, fix valid
+                                 4 = Real Time Kinematic (RTK). Satellite system used in
+                                      RTK mode with fixed integers.
+                                 5 = Float RTK.  Satellite system used in RTK mode with
+                                      floating integers.
+                                 6 = Estimated (dead reckoning) mode
+                                 7 = Manual input mode
+                                 8 = Simulator mode
+     7              Number of satellites being tracked
+     1.0            Horizontal dilution of precision (HDOP)
+     28.99,M        Altitude above mean sea level [meters]
+     -30.68,M       Height of geoid (mean sea level) above WGS84 ellipsoid [meters]
+     10             Time in seconds since last DGPS update
+     0907           DGPS station ID number
+     *5E            Checksum, always begins with *
+
+If the height of geoid is missing then the altitude should be suspect. Some
+non-standard implementations report altitude with respect to the ellipsoid
+rather than geoid altitude. Some units do not report negative altitudes at
+all. This is the only sentence that reports altitude.
+
+Definition of RMC:
+RMC - Recommended Minimum Sentence C
+
+Example Record:
+$GPRMC,123519,A,4807.038,N,01131.000,E,022.4,084.4,230394,003.1,W*6A
+
+where:
+     RMC          Recommended Minimum Sentence C
+     123519       Time of fix, UTC
+                    12 = 2-digit hour [24-hour clock]
+                    35 = 2-digit minute
+                    19 = 2-digit second
+     A            Data Status: A = valid
+                               V = invalid
+     4807.038,N   Latitude 48 degrees 07.038 minutes North
+     01131.000,E  Longitude 11 degrees 31.000 minutes East
+     022.4        Speed over ground [knots] 
+     084.4        Track made good [degrees, True]
+     230394       Date, UTC
+                    23 = 2-digit day of month
+                    03 = 2-digit month
+                    94 = 2-digit year (1994)
+     003.1,W      Magnetic Variation [degrees], 3.1 degrees West
+     *6A          Checksum, always begins with *
+
+Definition of VTG:
+VTG - Velocity made good. The gps receiver may use the LC prefix instead of GP
+if it is emulating Loran output.
+
+Example Record: $GPVTG,054.7,T,034.4,M,005.5,N,010.2,K*48
+
+where:
+     VTG        Track made good and ground speed
+     054.7,T    True track made good [degrees, clockwise from North]
+     034.4,M    Magnetic track made good
+     005.5,N    Ground speed [knots]
+     010.2,K    Ground speed [kilometers per hour]
+     *48        Checksum, begins with *
+
+Definition of ZDA:
+ZDA - Date and Time
+
+Example Record: $GPZDA,201530.18,04,07,2002,01,00*60
+
+where:
+     201530.18  hours, minutes, and seconds expressed as hhmmss.ss
+                 20       2-digit hour [24 hour clock]
+                 15       2-digit minute
+                 30.18    decimal seconds
+     04         2-digit day,
+     07         2-digit month
+     2002       4-digit year
+     01         2-digit local timezone hours: -13 to 13
+     00         2-digit local timezone minutes: 0 to 59
+     *60        Checksum, begins with *
+
+Example Content:
+NAV 2013/11/20 05:00:00.644 GPS $GPGGA,050000.00,4131.43842,N,07040.33599,W,2,8,0.9,29.17,M,-30.68,M,9,0907*6B
+NAV 2013/11/20 05:00:00.798 GPS $GPRMC,050000.00,A,4131.43842,N,07040.33599,W,0.05,291.3,201113,0.0,E*7B
+NAV 2013/11/20 05:00:00.873 GPS $GPVTG,291.3,T,,M,0.05,N,0.09,K*65
+NAV 2013/11/20 05:00:00.952 GPS $GPZDA,050000.00,20,11,2013,+0,+0*61
+NAV 2013/11/20 05:00:01.907 GPS $GPGGA,050001.00,4131.43841,N,07040.33599,W,2,8,0.9,29.13,M,-30.68,M,9,0907*6D
+NAV 2013/11/20 05:00:02.062 GPS $GPRMC,050001.00,A,4131.43841,N,07040.33599,W,0.02,234.5,201113,0.0,E*77
+NAV 2013/11/20 05:00:02.136 GPS $GPVTG,234.5,T,,M,0.02,N,0.04,K*66
+NAV 2013/11/20 05:00:02.216 GPS $GPZDA,050001.00,20,11,2013,+0,+0*60
+
+References: www.nmea.org

@@ -1,0 +1,198 @@
+#######################################################################
+Created: 2010-05-12
+Author: Aaron Sweeney
+
+Last Revised: 2014-05-09
+#######################################################################
+DESCRIPTION:
+
+Generating R2R Navigation Standard Products
+
+This code is designed to produce three navigation standard products
+from the primary GPS receiver onboard research vessels in the UNOLS
+fleet.
+
+ Products:
+
+	1.  NavBestRes: GPS position sampled at the highest rate
+		         in time (typ. once-per-second) with "bad"
+                         positions flagged.
+        2.  Nav1Min:    NavBestRes sampled at once-per-minute
+        3.  NavControl: Nav1Min sampled using the Douglas Peucker 
+                         algorithm to specify the minimum number of
+                         points to capture the general shape of a 
+                         curve
+########################################################################
+CODE MANIFEST:
+
+Text:
+
+	README.install: This file.
+
+Functions and parameters:
+
+	getmeta.php: Functions for getting cruise-level metadata including 
+        	     max. vessel speed and input/output paths.
+	getopts.php: Function to process command-line arguments.
+	r2rdb-config.inc.php: Parameter definitions required for querying R2R 
+                               database.
+	paths.inc.php: Test basepath settings (see below).
+	flags.inc.php: Defines the character used for flagging during quality control.
+	jsontools.inc.php: Function to pretty-print JSON given a PHP object.
+	navtools.inc.php: Functions for calculating distance, speed, acceleration, 
+                           azimuth, and geographic extent.
+	nmeatools.inc.php: Classes for various NMEA messages.
+	decompressor.inc.php: Test for the presence of compressed files and uncompress
+                               them in your temporary work space.
+	navdatalist.inc.php: Create a date/time ordered list of raw 
+                              navigation files.
+	navcopy.inc.php: Read through all files in the datalist and translate
+                          them into R2R navigation standard format.
+        navqa.inc.php: Assess the quality of the navigation in standard format.
+	navbounds.inc.php: Calculate the geographic extent of the cruise (north, south,
+                       west, east).
+        navqc.inc.php: Flag "bad" navigation data.  Output: NavBestRes
+	navsogcog.inc.php: Calculate instantaneous speed over ground and course over ground
+                            and append columns to NavBestRes file.
+        navsample.inc.php: Sample the navigation data at a lower rate than
+                            originally sampled.  No interpolation or filtering is
+                            performed.  Output: Nav1Min
+	xmltools.inc.php: Function to write QA Report in XML format.
+	nav_qa_template_ver1.0.xml: Quality Assessment XML template for use with navigation
+                           based on R2R XML schema version 1.0.
+
+Executable scripts:
+
+        navconfig.php: Generate navigation processing configuration file(s).
+	navmanager.php: Assess the quality of navigation raw data filesets and
+   	                 create R2R standard navigation products from the 
+                         primary navigation raw data fileset for a given cruise.
+	navformat.php: Display supported input navigation formats.
+
+Java code:
+
+        NavControl (directory): Grab the minimum number of points to
+                                 capture the general shape of the 
+                                 navigation track.  Output: NavControl        
+
+Documentation:
+        doc/fileformat/format-nav[N].txt: 
+          Plain text files describing known fileformats (and content)
+        doc/guide/processing_guide.txt: 
+          Plain text file describing what to look out for when processing nav.
+        doc/bestpractices/Recommended-Best-Practices-for-Navigation-Data-Collection.pdf
+          PDF file describing recommendations to operators on best practices
+          for navigation data collection
+
+#########################################################################
+INSTALLATION:
+
+Requirements:
+
+You will need a version of PHP that is at least 5.2 in order to use the 
+built-in JSON functions: json_encode() and json_decode().
+
+You will need a version of Java that is at least 1.5 in order to use
+the NavControl Java code.
+
+Optional PostgreSQL support: 
+
+If you want to query the R2R database for cruise-level metadata, your 
+version of PHP must have support for PostgreSQL.  Specifically, the PHP 
+commands that are required to access the R2R database are pg_connect(), 
+pg_query(), pg_num_rows(), and pg_fetch_row().  You will not need 
+PostgreSQL support if you pull your cruise-level metadata from a 
+configuration file (see navmanager.php usage).  On fleet.rvdata.us, 
+the version of PHP that has PostgreSQL and JSON support is located at 
+/ldeo/mgg/opt/bin/php.
+
+Notes:
+
+The '#!/usr/bin/env php' at the top of each executable script will 
+resolve to whichever version of PHP is first in your path.
+
+##########################################################################
+DEFINING YOUR ENVIRONMENT:
+
+
+You should add the absolute path name of where you placed these programs 
+to your path environment variable.  For bash users, add the following line
+to your ~/.bashrc file:
+
+For Mac users running bash:
+
+   cat 'PATH=$PATH:/path/to/r2r/portable_nav/bin' >> ~/.bash_profile
+
+For linux users running bash:
+
+   cat 'PATH=$PATH:/path/to/r2r/portable_nav/bin' >> ~/.bashrc
+
+For linux users running csh:
+
+	cat 'setenv PATH $PATH:/path/to/r2r/portable_nav/bin' >> ~/.cshrc
+
+Make sure to change the path in these commands to where your r2r_nav
+code actually resides.
+
+Now you can type the name of the executable scripts on the command line 
+and see a general description of what the code does and what arguments to
+specify.
+
+
+##########################################################################
+RUNNING THE CODE:
+
+You can create navigation processing configuration file(s) in your current
+working directory with navconfig.php:
+
+   [user@fleet]$ navconfig.php -c <cruiseid> -x
+
+These configuration files are in JavaScript Object Notation (JSON) format.  It's
+recommended that if you hand-edit these configuration files, you first validate
+the syntax by using a site like www.jsonlint.com.  This is not a requirement,
+however; navmanager will validate both the syntax and content of the 
+configuration files.
+
+If you have access to the R2R database, a configuration file will be created
+for each GNSS device active on the cruise, as well as the fileset identified
+as the primary source of navigation.  The configuration file(s) will be named
+<cruiseid>_<filesetid>_qacfg.json.
+
+If you do not have access to the R2R database, a template configuration file
+will be created.  It's name will be <cruiseid>_template_qacfg.json.  You will 
+need to edit this configuration file by hand before running navmanager.
+
+There are two ways of producing a quality assessment of your navigation rawdata
+fileset.  If you have already created a configuration file, you can run 
+navmanager as below:
+
+    [user@fleet]$ navmanager.php -c <cruiseid> -x -m <cruiseid>_<filesetid>_qacfg.json
+
+If the configuration file indicates (via nav_source = 1) that this rawdata fileset
+is the primary source of navigation, navmanager will produce R2R standard
+navigation products.  Otherwise, navmanager will stop when it finishes the
+quality assessment of the rawdata fileset.
+
+Alternatively, if you have not yet created a configuration file(s), you can
+let navmanager create it/them for you and proceed:
+
+    [user@fleet]$ navmanager.php -c <cruiseid> -x
+
+This will produce a separate configuration file for every GNSS device active on 
+the cruise, as well as for the rawdata fileset identified as the primary source 
+of navigation.  Navmanager will then proceed to assess the quality of each of 
+these filesets.  R2R navigation standard products will also be generated from 
+the primary source of navigation.
+
+Metadata about the rawdata filesets will be written to: 
+R2RNAV_BASEPATH_RAWDATA_QUALITY + directory_rawdata_quality (set in your *cfg file).
+
+Metadata about the products (and the products themselves) will be written to:
+R2RNAV_BASEPATH_PRODUCTS + directory_products (set in your *cfg file).
+
+The code navformat.php simply shows an example of the input navigation 
+formats currently readable by this code.  It is not called by 
+navmanager.php, but may be of interest to the curious user.
+
+
+ 

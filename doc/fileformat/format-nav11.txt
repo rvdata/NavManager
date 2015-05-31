@@ -1,0 +1,63 @@
+File Format ID: nav11
+
+Format Description Creation Date: 2011-05-19
+
+File Type: ASCII, whitespace-delimited values
+
+Record Format:
+
+Example Record: 
+01/26/2009	12:00:03:.245	115843.682	25	37.794330	N	80	7.186390	W	-2.860000	0.000000	1.000000	10	1	$INGGA	19
+
+where:
+     01/26/2009     Date, (source unknown) UTC
+                      01   = 2-digit month
+                      26   = 2-digit day of month
+                      2009 = 4-digit year
+     12:00:03:.245  Time, (source unknown) UTC
+                      12   = 2-digit hour [24-hour clock]
+                      00   = 2-digit minute
+                      03   = 2-digit integer second
+                      .245 = fraction of a second
+     115843.682     GPS receiver clock time of fix
+                      11     = 2-digit hour [24-hour clock]
+                      58     = 2-digit minute
+                      43.682 = decimal seconds
+     25             Latitude Integer Degrees (positive)
+     37.794330      Latitude Decimal Minutes (positive)
+     N              Latitude Direction (North)
+     80             Longitude Integer Degrees (positive)
+     7.186390       Longitude Decimal Minutes (positive)
+     W              Longitude Direction (West)
+     -2.860000      Altitude [m]
+     0.000000       Geoid Height [m] 
+     1.000000       Horizontal Dilution of Precision (HDOP) [dimensionless]
+     10             Number of satellites used in fix
+     1              Fix quality:  0 = fix not available or invalid
+                                  1 = GPS Standard Positioning Service (SPS) mode, fix valid
+                                  2 = differential GPS (DGPS), SPS mode, fix valid
+                                  3 = GPS Precise Point Positioning (PPS) mode, fix valid
+                                  4 = Real Time Kinematic (RTK). Satellite system used in
+                                       RTK mode with fixed integers.
+                                  5 = Float RTK.  Satellite system used in RTK mode with
+                                       floating integers.
+                                  6 = Estimated (dead reckoning) mode
+                                  7 = Manual input mode
+                                  8 = Simulator mode
+     $INGGA         NMEA record identifier (GGA)
+     19             Checksum
+
+Data Format Description:
+Line 1: Header Record: Device Metadata plus
+Line 2: Header Record: Column names
+Line 3+: Data
+
+Example Content:
+Software Version Number: 1	Data File Format Number: 1	Build Version Number: 1	Error Count Since VI Started: 0	Manufacturer: Applanix	 Model Number: POSMV V3	 S/N: 274	 Cal Date: Feb. 2006 Wind Direction Offset:	0.00
+Computer Date	Computer Time	GPS Time	Lat Deg	Lat Min	Lat Dir	Lon Deg	Lon Min	Lon DiAltitude	Geoid Height	Horizontal Dilution	Satellites	Fix Quality	Mnemonic	Checksum
+01/26/2009	12:00:00:.245	115843.682	25	37.794330	N	80	7.186390	W	-2.860000	0.000000	1.000000	10	1	$INGGA	19
+01/26/2009	12:00:01:.245	115844.682	25	37.796370	N	80	7.186680	W	-2.990000	0.000000	1.000000	10	1	$INGGA	12
+01/26/2009	12:00:02:.245	115845.682	25	37.798410	N	80	7.187050	W	-2.800000	0.000000	1.000000	10	1	$INGGA	1E
+01/26/2009	12:00:03:.245	115846.681	25	37.800450	N	80	7.187430	W	-2.730000	0.000000	1.000000	10	1	$INGGA	1A
+
+References: www.nmea.org

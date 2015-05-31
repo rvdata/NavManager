@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<r2r:qareport xmlns:r2r="http://get.rvdata.us/schema/r2r-1.0"
+ xmlns:foaf="http://xmlns.com/foaf/0.1/"
+ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:schemaLocation="http://get.rvdata.us/schema/r2r-1.0 http://get.rvdata.us/schema/r2r-1.0.xsd">
+    <r2r:identifier></r2r:identifier>
+    <r2r:provenance>
+        <r2r:contact_name>Data Manager</r2r:contact_name>
+        <r2r:contact_email>info@rvdata.us</r2r:contact_email>
+        <r2r:distro_type>post-cruise</r2r:distro_type>
+        <r2r:cruise_id />
+        <r2r:fileset_id />
+        <r2r:create_process />
+        <r2r:create_time />
+        <r2r:update_process />
+        <r2r:update_time xsi:nil="true" />
+    </r2r:provenance>
+    <r2r:certificate>
+        <r2r:rating description=""></r2r:rating>
+        <r2r:tests>
+            <r2r:test name="percent_completeness">
+                <r2r:rating description=""></r2r:rating>
+                <r2r:value uom="percent"></r2r:value>
+            </r2r:test>
+            <r2r:test name="longest_epoch_gap">
+                <r2r:rating description=""></r2r:rating>
+                <r2r:value uom=""></r2r:value>
+            </r2r:test>
+            <r2r:test name="percent_records_out_of_sequence">
+                <r2r:rating description=""></r2r:rating>
+                <r2r:value uom="percent"></r2r:value>
+            </r2r:test>
+            <r2r:test name="percent_records_with_bad_gps_quality_indicator">
+                <r2r:rating description=""></r2r:rating>
+                <r2r:value uom="percent"></r2r:value>
+            </r2r:test>
+            <r2r:test name="percent_unreasonable_speeds">
+                <r2r:rating description=""></r2r:rating>
+                <r2r:value uom="percent"></r2r:value>
+            </r2r:test>
+            <r2r:test name="percent_unreasonable_accelerations">
+                <r2r:rating description=""></r2r:rating>
+                <r2r:value uom="percent"></r2r:value>
+            </r2r:test>
+        </r2r:tests>
+        <r2r:infos>
+            <r2r:info name="first_epoch">
+                <r2r:value></r2r:value>
+            </r2r:info>
+            <r2r:info name="last_epoch">
+                <r2r:value></r2r:value>
+            </r2r:info>
+            <r2r:info name="epoch_interval">
+                <r2r:value uom="s"></r2r:value>
+            </r2r:info>
+            <r2r:info name="number_of_satellites">
+                <r2r:bounds>
+                    <r2r:bound name="maximum"></r2r:bound>
+                    <r2r:bound name="minimum"></r2r:bound>
+                </r2r:bounds>
+            </r2r:info>
+            <r2r:info name="HDOP">
+                <r2r:bounds>
+                    <r2r:bound name="maximum"></r2r:bound>
+                    <r2r:bound name="minimum"></r2r:bound>
+                </r2r:bounds>
+            </r2r:info>
+            <r2r:info name="altitude">
+                <r2r:bounds>
+                    <r2r:bound name="maximum" uom="m"></r2r:bound>
+                    <r2r:bound name="minimum" uom="m"></r2r:bound>
+                </r2r:bounds>
+            </r2r:info>
+            <r2r:info name="horizontal_speed">
+                <r2r:bounds>
+                    <r2r:bound name="maximum" uom="m/s"></r2r:bound>
+                    <r2r:bound name="minimum" uom="m/s"></r2r:bound>
+                </r2r:bounds>
+            </r2r:info>
+            <r2r:info name="horizontal_acceleration">
+                <r2r:bounds>
+                    <r2r:bound name="maximum" uom="m/s^2"></r2r:bound>
+                    <r2r:bound name="minimum" uom="m/s^2"></r2r:bound>
+                </r2r:bounds>
+            </r2r:info>
+            <r2r:info name="northBoundLatitude">
+                <r2r:value uom="deg"></r2r:value>
+            </r2r:info>
+            <r2r:info name="southBoundLatitude">
+                <r2r:value uom="deg"></r2r:value>
+            </r2r:info>
+            <r2r:info name="westBoundLongitude">
+                <r2r:value uom="deg"></r2r:value>
+            </r2r:info>
+            <r2r:info name="eastBoundLongitude">
+                <r2r:value uom="deg"></r2r:value>
+            </r2r:info>
+            <r2r:info name="number_of_gaps_longer_than_threshold">
+                <r2r:value></r2r:value>
+            </r2r:info>
+        </r2r:infos>
+    </r2r:certificate>
+    <r2r:references/>
+    <r2r:configuration>
+        <r2r:create_person id=""></r2r:create_person>
+        <r2r:create_institution id=""></r2r:create_institution>
+        <r2r:parameters>
+            <r2r:parameter name="data_starttime"></r2r:parameter>
+            <r2r:parameter name="data_endtime"></r2r:parameter>
+            <r2r:parameter name="speed_threshold" uom=""></r2r:parameter>
+            <r2r:parameter name="acceleration_threshold" uom=""></r2r:parameter>
+            <r2r:parameter name="gap_threshold" uom=""></r2r:parameter>
+        </r2r:parameters>
+    </r2r:configuration>
+    <r2r:log/>
+    <r2r:filesetinfo>
+        <r2r:cruise></r2r:cruise>
+        <r2r:extent></r2r:extent>
+        <r2r:fileset></r2r:fileset>
+    </r2r:filesetinfo>
+    <r2r:manifest>
+        <r2r:files>
+            <r2r:file id="" checksum=""></r2r:file>
+        </r2r:files>
+    </r2r:manifest>
+</r2r:qareport>
