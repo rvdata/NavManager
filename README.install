@@ -63,11 +63,14 @@ Functions and parameters:
 
 Executable scripts:
 
-        navconfig.php: Generate navigation processing configuration file(s).
-	navmanager.php: Assess the quality of navigation raw data filesets and
-   	                 create R2R standard navigation products from the 
-                         primary navigation raw data fileset for a given cruise.
 	navformat.php: Display supported input navigation formats.
+	navcopy.php: Convert raw navigation data into the r2r standard format
+	navinfo.php: Get basic info on r2rnav files
+	navqa.php:	Performa a quality assesment report on r2rnav files
+	navqc.php:	Flag bad values in r2rnav files
+	navsample:	Downsample r2rnav files
+	navsogcog:	Compute speed over ground and course over ground
+		for r2rnav files
 
 Java code:
 
@@ -142,57 +145,15 @@ specify.
 ##########################################################################
 RUNNING THE CODE:
 
-You can create navigation processing configuration file(s) in your current
-working directory with navconfig.php:
+The first step in running NavManager is to convert raw navigation
+files into the standard r2rnav format.  Do this with navcopy.php
 
-   [user@fleet]$ navconfig.php -c <cruiseid> -x
+navcopy.php -i /path/to/rawdata/dir -o /path/to/data.r2rnav -f nav1
 
-These configuration files are in JavaScript Object Notation (JSON) format.  It's
-recommended that if you hand-edit these configuration files, you first validate
-the syntax by using a site like www.jsonlint.com.  This is not a requirement,
-however; navmanager will validate both the syntax and content of the 
-configuration files.
+To see if your data is in a supported format, and to get info on
+the supported navigation formats, checkout out navformat.php
 
-If you have access to the R2R database, a configuration file will be created
-for each GNSS device active on the cruise, as well as the fileset identified
-as the primary source of navigation.  The configuration file(s) will be named
-<cruiseid>_<filesetid>_qacfg.json.
+navformat.php -f all
 
-If you do not have access to the R2R database, a template configuration file
-will be created.  It's name will be <cruiseid>_template_qacfg.json.  You will 
-need to edit this configuration file by hand before running navmanager.
-
-There are two ways of producing a quality assessment of your navigation rawdata
-fileset.  If you have already created a configuration file, you can run 
-navmanager as below:
-
-    [user@fleet]$ navmanager.php -c <cruiseid> -x -m <cruiseid>_<filesetid>_qacfg.json
-
-If the configuration file indicates (via nav_source = 1) that this rawdata fileset
-is the primary source of navigation, navmanager will produce R2R standard
-navigation products.  Otherwise, navmanager will stop when it finishes the
-quality assessment of the rawdata fileset.
-
-Alternatively, if you have not yet created a configuration file(s), you can
-let navmanager create it/them for you and proceed:
-
-    [user@fleet]$ navmanager.php -c <cruiseid> -x
-
-This will produce a separate configuration file for every GNSS device active on 
-the cruise, as well as for the rawdata fileset identified as the primary source 
-of navigation.  Navmanager will then proceed to assess the quality of each of 
-these filesets.  R2R navigation standard products will also be generated from 
-the primary source of navigation.
-
-Metadata about the rawdata filesets will be written to: 
-R2RNAV_BASEPATH_RAWDATA_QUALITY + directory_rawdata_quality (set in your *cfg file).
-
-Metadata about the products (and the products themselves) will be written to:
-R2RNAV_BASEPATH_PRODUCTS + directory_products (set in your *cfg file).
-
-The code navformat.php simply shows an example of the input navigation 
-formats currently readable by this code.  It is not called by 
-navmanager.php, but may be of interest to the curious user.
-
-
- 
+Once you have converted your raw data into a .r2rnav file, you
+can use this file with any of the other NavManager functions

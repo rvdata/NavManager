@@ -20,5 +20,8 @@ define('SRID', '4326'); // WGS-84
 define('GEOM_TYPE', 'MULTILINESTRING');
 define('GPS_START_DATE', '1994-03-01T00:00:00Z');
 define('GPS_END_DATE', '2024-12-31T00:00:00Z');
+define('MAX_SPEED', '8.7');
+define('MAX_ACCEL', '1');
+define('MAX_GAP', '300');
 // http://www.postgis.org/documentation/manual-1.4/ch04.html
 ?>
