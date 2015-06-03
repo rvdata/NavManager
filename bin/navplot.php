@@ -14,6 +14,7 @@
  * @link     http://www.rvdata.us
  */
 define('INCLUDE_PATH', dirname(__FILE__) . '/../include/');
+require INCLUDE_PATH . 'globals.inc.php';
 require INCLUDE_PATH . 'getopts.php';
 require INCLUDE_PATH . 'navbounds.inc.php';
 date_default_timezone_set('UTC');
@@ -30,16 +31,16 @@ function usage()
     echo "Purpose: Use Generic Mapping Tools (GMT) to create postscript\n";
     echo "         plot of cruise track with coastlines.\n";
     echo "\n";
-    echo "Usage: navplot.php -c <cruiseid> [-h]\n";
+    echo "Usage: navplot.php -i <infile> [-h]\n";
     echo "\n";
     echo "Required:\n";
-    echo "\t-c or --cruiseid <cruiseid>\n";
-    echo "\t\tCruise ID\n";
+    echo "\t-i or --infile <infile>\n";
+    echo "\t\tInput r2rnav file to be plotted\n";
     echo "\n";
     echo "Options:\n";
     echo "\t-h or --help\t\tShow this help.\n";
     echo "\n";
-    echo "Output file: <cruiseid>_track.ps\n";
+    echo "Output file: <infile>_track.ps\n";
     echo "\n";
     
 } // end function usage()
@@ -82,17 +83,27 @@ function run_cmd($cmd_name, $cmd_str)
 //----------- Main ------------//
 $opts = getopts(
     array(
-        'c' => array('switch' => array('c','cruiseid'), 'type' => GETOPT_VAL),
+        'i' => array('switch' => array('i','infile'), 'type' => GETOPT_VAL),
         'h' => array('switch' => array('h','help'), 'type' => GETOPT_SWITCH),
     ), $argv
 );
 
-if ($opts['h'] || $opts['c']==null) {
-    usage();
-    exit(0);
+if (!$opts['i']) {
+    $syntaxErr .=  "SYNTAX ERROR: Must specify a  r2rnav file to plot [-i]\n";
+} else {
+    $navControl = trim($opts['i']);
 }
 
-$cruiseid = trim($opts['c']);
+if ($opts['h']) {
+    usage();
+    exit(1);
+}
+
+if ($syntaxErr) {
+    usage();
+    echo $syntaxErr;
+    exit(1);
+}
 
 // Output username, machine name, and current UTC date/time:
 echo "Run by user ", exec('whoami'), " on ", php_uname('n'), " at ", 
@@ -102,8 +113,7 @@ echo "OS: ", php_uname('a') ,"\n";
 // Output PHP version:
 echo "PHP version: ", PHP_VERSION, "\n";
 
-$navControl = $cruiseid . "_control.r2rnav";
-$navPlot    = $cruiseid . "_track.ps";
+$navPlot    = $navControl . "_track.ps";
 
 //---------- Determine geographic boundaries of control point navigation ----------//
 echo "Running navbounds() with:\n";
@@ -219,19 +229,19 @@ $beNice = "nice -n $niceness ";
 $cmd_str = "gmtset PAPER_MEDIA letter PLOT_DEGREE_FORMAT D ANNOT_FONT_SIZE_PRIMARY 8";
 run_cmd("gmtset", $beNice . $cmd_str); 
 
-echo "pscoast -J${proj}${width} -R$west/$east/$south/$north -B${xinfo}a${yinfo}WSen -D$coastres -I$rivertype -A1000 -W2 -Yc -Xc -Lf$lon0/$lat0/$slat/$length+l -P -K -V > $navPlot\n";
+#echo "pscoast -J${proj}${width} -R$west/$east/$south/$north -B${xinfo}a${yinfo}WSen -D$coastres -I$rivertype -A1000 -W2 -Yc -Xc -Lf$lon0/$lat0/$slat/$length+l -P -K -V > $navPlot\n";
 
-$cmd_str = "pscoast -J${proj}${width} -R$west/$east/$south/$north -B${xinfo}a${yinfo}WSen -D$coastres -I$rivertype -A1000 -W2 -Yc -Xc -Lf$lon0/$lat0/$slat/$length+l -P -K -V > $navPlot";
+$cmd_str = "pscoast -J${proj}${width} -R$west/$east/$south/$north -B${xinfo}a${yinfo}WSen -D$coastres -I$rivertype -A1000 -W2 -Yc -Xc -Lf$lon0/$lat0/$slat/$length+l -P -K -S132/112/255 -G85/107/47 -V> $navPlot";
 run_cmd("pscoast", $beNice . $cmd_str);
 
-$cmd_str = "awk 'NR>3 {print $2, $3}' $navControl | psxy -J -R -Wblue -Sc5p -O -K -V >> $navPlot";
-run_cmd("psxy (symbols)", $beNice . $cmd_str);
+#$cmd_str = "awk 'NR>3 {print $2, $3}' $navControl | psxy -J -R -Wred -Sc5p -O -K -V >> $navPlot";
+#run_cmd("psxy (symbols)", $beNice . $cmd_str);
 
-$cmd_str = "awk 'NR>3 {print $2, $3}' $navControl | psxy -J -R -Wblue -O -K -V >> $navPlot";
+$cmd_str = "awk 'NR>3 {print $2, $3}' $navControl | psxy -J -R -W1.5p,red -O -K -V >> $navPlot";
 run_cmd("psxy (line)", $beNice . $cmd_str);
 
-$cmd_str = "awk 'NR>3 && NR%10==0 {print $2, $3, " . $fontsize . ", " . $textangle . ", " . $fontno . ", \"" . $justify . "\", $1}' $navControl | pstext -J -R -Gred -O -V >> $navPlot";
-run_cmd("pstext", $beNice . $cmd_str);
+#$cmd_str = "awk 'NR>3 && NR%10==0 {print $2, $3, " . $fontsize . ", " . $textangle . ", " . $fontno . ", \"" . $justify . "\", $1}' $navControl | pstext -J -R -Gred -O -V >> $navPlot";
+#run_cmd("pstext", $beNice . $cmd_str);
 
 // Successful execution:
 exit(0);

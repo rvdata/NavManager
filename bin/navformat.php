@@ -30,10 +30,10 @@ function usage()
     echo "Purpose: Display list of input navigation formats that R2R tries to\n"; 
     echo "accommodate.\n";
     echo "\n";
-    echo "Usage: navformat.php -F <format> [-h]\n";
+    echo "Usage: navformat.php -f <format> [-h]\n";
     echo "\n";
     echo "Required:\n";
-    echo "\t-F or --format <format>\n";
+    echo "\t-f or --format <format>\n";
     echo "\t\tFormat specifier.  (See list of supported formats below.)\n";
     echo "\n";
     echo "Options:\n";
@@ -73,12 +73,12 @@ function usage()
 //----------- Main ------------//
 $opts = getopts(
     array(
-        'F' => array('switch' => array('F', 'format'), 'type' => GETOPT_VAL),
+        'f' => array('switch' => array('f', 'format'), 'type' => GETOPT_VAL),
         'h' => array('switch' => array('h', 'help'), 'type' => GETOPT_SWITCH),
     ), $argv
 );
 
-if ($opts['h'] || $opts['F'] == null) {
+if ($opts['h'] || $opts['f'] == null) {
     usage();
     exit(0);
 }
