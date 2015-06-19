@@ -797,7 +797,9 @@ class DateTimeSimple
                 //      $date_format, $zda->year, $zda->month, $zda->day,
                 //      $zda->hh, $zda->mm, $zda->ss
                 //  ), "\n";
-                break;
+				if ($zda->year != "" && $zda->month != ""&& $zda->day != "" && $zda->hh != "0" && $zda->mm != "0" && $zda->ss != "0") {
+					break;
+				}
             } else {
                 if (preg_match('/^\$UNIXD$/', $NavRec[0])) {
                     $unixd->init($baseyear, $NavRec);
@@ -807,7 +809,9 @@ class DateTimeSimple
                     $this->hh    = $unixd->hh;
                     $this->mm    = $unixd->mm;
                     $this->ss    = $unixd->ss;
-                    break;
+					if ($zda->year != "" && $zda->month != ""&& $zda->day != "" && $zda->hh != "0" && $zda->mm != "0" && $zda->ss != "0") {
+						break;
+					}
                 } else {
                     if (preg_match('/^\$.{2}RMC$/', $NavRec[0])) {
                         $rmc->init($NavRec);
@@ -822,7 +826,9 @@ class DateTimeSimple
                         //     $date_format, $rmc->year, $rmc->month, $rmc->day, 
                         //     $rmc->hh, $rmc->mm, $rmc->ss
                         // ),"\n";   
-                        break;
+						if ($zda->year != "" && $zda->month != ""&& $zda->day != "" && $zda->hh != "0" && $zda->mm != "0" && $zda->ss != "0") {
+							break;
+						}
                     } // end if RMC
                 } // end if UNIXD
             } // end if ZDA
@@ -875,7 +881,10 @@ class DateTimeSimple
                         //     $date_format, $zda->year, $zda->month, $zda->day, 
                         //     $zda->hh, $zda->mm, $zda->ss
                         // ),"\n";   
-                        break;
+						if ($zda->year != "" && $zda->month != ""&& $zda->day != "" && $zda->hh != "0" && $zda->mm != "0" && $zda->ss != "0") {
+							break;
+						}
+				
                     } else {
                         if (preg_match('/^\$UNIXD$/', $NavRec[0])) {
                             $unixd->init($baseyear, $NavRec);
@@ -885,7 +894,11 @@ class DateTimeSimple
                             $this->hh    = $unixd->hh;
                             $this->mm    = $unixd->mm;
                             $this->ss    = $unixd->ss;
-                            break;
+
+							if ($zda->year != "" && $zda->month != ""&& $zda->day != "" && $zda->hh != "0" && $zda->mm != "0" && $zda->ss != "0") {
+								break;
+							}
+
                         } else {
                             if (preg_match('/^\$.{2}RMC$/', $NavRec[0])) {
                                 $rmc->init($NavRec);
@@ -900,7 +913,9 @@ class DateTimeSimple
                                 // $date_format, $rmc->year, $rmc->month, $rmc->day,
                                 // $rmc->hh, $rmc->mm, $rmc->ss
                                 // ), "\n";   
-                                break;
+								if ($zda->year != "" && $zda->month != ""&& $zda->day != "" && $zda->hh != "0" && $zda->mm != "0" && $zda->ss != "0") {
+									break;
+								}
                             } // end if RMC
                         } // end if UNIXD
                     } // end if ZDA
