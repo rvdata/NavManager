@@ -1,0 +1,23 @@
+RMC - Recommended Minimum Sentence C
+
+Example Record:
+$GPRMC,123519,A,4807.038,N,01131.000,E,022.4,084.4,230394,003.1,W*6A
+
+where:
+     RMC          Recommended Minimum Sentence C
+     123519       Time of fix, UTC 
+                    12 = 2-digit hour [24-hour clock]
+                    35 = 2-digit minute
+                    19 = 2-digit second
+     A            Data Status: A = valid
+                               V = invalid
+     4807.038,N   Latitude 48 degrees 07.038 minutes North
+     01131.000,E  Longitude 11 degrees 31.000 minutes East
+     022.4        Speed over ground [knots] 
+     084.4        Track made good [degrees, True]
+     230394       Date, UTC 
+                    23 = 2-digit day of month
+                    03 = 2-digit month
+                    94 = 2-digit year (1994)
+     003.1,W      Magnetic Variation [degrees], 3.1 degrees West
+     *6A          Checksum, always begins with *

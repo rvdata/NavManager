@@ -1,0 +1,10 @@
+GLL - Geographic Position, Latitude/Longitude and Time
+
+Example Record: $GPGLL,2118.98295,N,15753.17431,W,000001.00,A*17
+
+where:
+     2118.98295,N    Latitude 21 degrees 18.98295 minutes North
+     15753.17431,W   Longitude 157 degrees 53.17431 minutes West
+     000001.00       Fix taken at 00:00:01.00 UTC 
+     A               Data valid
+     *17             Checksum, always begins with *

@@ -1,0 +1,17 @@
+GST - Position error statistics
+
+Example Record: $GPGST,172814.0,0.006,0.023,0.020,273.6,0.023,0.020,0.031*6A
+
+where:
+	GST				Position error statistics
+	172814.0			UTC of position fix
+	0.006				RMS value of pseudorange residuals
+						Includes carrier phase residual during periods of RTK (float) and RTK (fixed) processing
+
+	0.023				Error ellipse semi-major axis 1 sigma error, in meters
+	0.020				Error ellipse semi-minor axis 1 sigma error, in meters
+	273.6				Error ellipse orientation, degrees from true north
+	0.023				Latitude 1 sigma error, in meters
+	0.020				Longitude 1 sigma error, in meters
+	0.031				Height 1 sigma error, in meters
+	*6A				Checksum data always begins with *

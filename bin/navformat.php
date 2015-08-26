@@ -55,10 +55,29 @@ function usage()
     echo "\tnav12\tDAS: device id + external clock + GGA and ZDA\n";
     echo "\tnav13\tDAS: LUMCON Multiple Instrument Data Aquisition System (MIDAS)\n";
     echo "\tnav14\tDAS: MLML Underway Data Aquisition System (UDAS)\n";
-    echo "\tnav15\tDAS: OSU csv\n";
+    echo "\tnav15\tDAS: OSU Data Aquisiton System (Wacoma)\n";
+    echo "\tnav16\tDAS: Nobeltec navigation software (Blue Heron)\n";
+    echo "\tnav17\tDAS: WHOI Calliope (Oceanus 2010-2011)\n";
+    echo "\tnav18\tDAS: WHOI Calliope (Oceanus 2009)\n";
+    echo "\tnav19\tDAS: OSU Data Aquisiton System (Wacoma 2009)\n";
+    echo "\tnav20\tDAS: GGA, RMC, VTG, and ZDA strings\n";
+    echo "\tnav21\tDAS: MLML Underway Data Aquisition System (UDAS circa 2008)\n";
+    echo "\tnav22\tDAS: GGA, VTG, and PASHR ATT strings\n";
+    echo "\tnav23\tDAS: MLML Underway Data Aquisition System (UDAS)\n";
     echo "\n";
     echo "\tuhdas\t\tDAS: University of Hawaii Data Acquisition System (for ADCP)\n";
     echo "\t\t\t[raw NMEA: UNIXD + GGA]\n";
+	echo "\n";
+	echo "\tGGA\tessential fix data which provide 3D location and quality data\n";
+	echo "\tGGL\tGeographic Position, Latitude/Longitude and Time\n";
+	echo "\tGSA\tDOP and Active Satellites\n";
+	echo "\tGST\tPosition error statistics\n";
+	echo "\tHDT\tHeading from True North\n";
+	echo "\tPSXN\tSeapath attitude data\n";
+	echo "\tRMC\tRecommended Minimum Sentence C\n";
+	echo "\tVTG\tVelocity made good\n";
+	echo "\tZDA\tDate and Time\n";
+	echo "\n";
     echo "\tall\t\tDisplay all supported input navigation formats.\n";
     echo "\n";
     echo "\tr2rnav\t\tShow R2R navigation standard products format.\n";
@@ -83,7 +102,7 @@ if ($opts['h'] || $opts['f'] == null) {
     exit(0);
 }
 
-$inputFormatSpec = trim($opts['F']); // e.g. "nav1"
+$inputFormatSpec = trim($opts['f']); // e.g. "nav1"
 
 //------------ Begin Main Program ----------//
 

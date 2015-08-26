@@ -1,0 +1,9 @@
+HDT - Heading from True North
+
+Example Record: $GPHDT,123.456,T*00
+
+where:
+	GPHDT		Heading tag
+	123.456	Heading in degrees
+	T			T: Indicates heading relative to True North
+	*00		Checksum always begins with *

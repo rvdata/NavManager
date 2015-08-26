@@ -1,0 +1,15 @@
+ZDA - Date and Time
+
+Example Record: $GPZDA,201530.18,04,07,2002,01,00*60
+
+where:
+     201530.18  hours, minutes, and seconds expressed as hhmmss.ss
+                 20       2-digit hour [24 hour clock]
+                 15       2-digit minute 
+                 30.18    decimal seconds
+     04         2-digit day, 
+     07         2-digit month
+     2002       4-digit year
+     01         2-digit local timezone hours: -13 to 13
+     00         2-digit local timezone minutes: 0 to 59
+     *60        Checksum, begins with *

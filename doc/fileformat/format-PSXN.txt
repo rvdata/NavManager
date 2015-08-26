@@ -1,0 +1,33 @@
+PSXN - Seapath attitude data
+
+Example Record: 
+
+	$PSXN,20,0,0,0,0*3B
+	$PSXN,23,0.05,0.05,89.40,0.00*0D
+
+where:
+	PSXN,20	Seapath attitude quality
+	0			Horizontal Position and velocity quality
+					0 = normal
+					1 = reduced performace
+					2 = invalid data
+
+	0			 Height and vertical velocity quality
+					0 = normal
+					1 = reduced performace
+					2 = invalid data
+
+	0			 Roll and pitch quality
+					0 = normal
+					1 = reduced performace
+					2 = invalid data
+
+	*3B		Checksum always begins with *
+
+------------------------------------
+	PSXN,23	Roll, Pitch, Heading and Heave
+	0.05		Roll in degrees - positive with port side up
+	0.05		Pitch in degrees - positive with bow up
+	89.40		Heading in degrees true
+	0.00		Heave in meters - positive down
+	*0D		checksumalways begins with *

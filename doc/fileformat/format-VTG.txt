@@ -1,0 +1,12 @@
+VTG - Velocity made good. The gps receiver may use the LC prefix instead of GP  
+if it is emulating Loran output.
+
+Example Record: $GPVTG,054.7,T,034.4,M,005.5,N,010.2,K*48
+
+where:
+     VTG        Track made good and ground speed
+     054.7,T    True track made good [degrees, clockwise from North]
+     034.4,M    Magnetic track made good
+     005.5,N    Ground speed [knots]
+     010.2,K    Ground speed [kilometers per hour]
+     *48        Checksum, begins with *

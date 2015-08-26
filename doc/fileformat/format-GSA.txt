@@ -1,0 +1,16 @@
+GSA - DOP and Active Satellites
+
+Example Record: $GPGSA,A,3,,5,29,27,12,,30,9,2,21,,,3.6,1.2,3.3*07
+
+where:
+     A              Mode: M = Manual, forced to operate in 2D or 3D
+                          A = Automatic, 3D/2D
+     3              Mode: 1 = Fix not available
+                          2 = 2D fix 
+                          3 = 3D fix 
+     (fields 3-14)  Space vehicle (SV) IDs of GPS satellites used in position fix 
+                      (null for unused fields)
+     3.6            Positional Dilution of Precision (PDOP)
+     1.2            Horizontal Dilution of Precision (HDOP)
+     3.3            Vertical Dilution of Precision (VDOP)
+     *07            Checksum, always begins with *
