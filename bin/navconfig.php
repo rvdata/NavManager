@@ -75,7 +75,7 @@ echo "PHP version: ", phpversion(), "\n";
 // Configuration file does not exist.  Create one for each GNSS
 // on the vessel, including the fileset used as the primary 
 // navigation source (nav_source = 1).
-$cfgfilelist = make_cfg($cruiseid);  
+$cfgfilelist = @make_cfg($cruiseid);  
 
 echo "navconfig: Created the following configuration files: \n";
 

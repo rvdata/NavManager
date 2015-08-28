@@ -24,6 +24,8 @@ if ($opts['h']) {
     exit(1);
 }
 
+$syntaxErr = "";
+
 if ($opts['i'] == null) {
 	$syntaxErr .=  "SYNTAX ERROR: Must specify a full res r2rnav file [-i]\n";
 } else {
@@ -45,7 +47,7 @@ if ($opts['t'] == null && $opts['c'] == null || $opts['t'] && $opts['c']) {
 	$syntaxErr .=  "SYNTAX ERROR: Must specify either [-c] or [-t]\n";
 }
 
-if ($syntaxErr) {
+if ($syntaxErr != "") {
 	usage();
 	echo $syntaxErr;
 	exit(1);
@@ -61,7 +63,7 @@ if ($timeInterval = trim($opts['t'])) {
 	echo "\tOutput file:         ", $navSampled, "\n";
 	echo "\tSample interval [s]: ", $timeInterval, "\n";
 
-	navsample($navBestRes, $timeInterval, $navSampled);
+	@navsample($navBestRes, $timeInterval, $navSampled);
 
 	echo "navsample(): Done.\n";
 	echo "\n";

@@ -9,7 +9,6 @@
  * @license  http://opensource.org/licenses/GPL-3.0 GNU General Public License
  * @link     http://www.rvdata.us
  */
-define('INCLUDE_PATH', dirname(__FILE__) . '/../include');
 define('TEMPLATE_PATH', dirname(__FILE__) . '/../include/Templates');
 define('DATAPATH', '/data/r2r');
 define('GEOEXTENT_TEMPLATE_JSON', TEMPLATE_PATH . '/geoextent_template.json');  

@@ -23,6 +23,8 @@ if ($opts['h']) {
     exit(1);
 }
 
+$syntaxErr = "";
+
 
 if ($opts['i'] == null) {
     $syntaxErr .=  "SYNTAX ERROR: Must specify a full res r2rnav file [-i]\n";
@@ -55,7 +57,7 @@ if ($opts['l']) {
 
 $navBestResSOGCOG = "navSOGCOG.tmp.r2rnav";
 
-if ($syntaxErr) {
+if ($syntaxErr != "") {
     usage();
     echo $syntaxErr;
     exit(1);
@@ -74,7 +76,7 @@ if ($syntaxErr) {
 			echo "\tLog file:                none\n";
 		}   
 
-		navsogcog($navBestRes, $navBestResSOGCOG, $fdplog);
+		@navsogcog($navBestRes, $navBestResSOGCOG, $fdplog);
 
 		// Rename results file with SOG and COG to QC'd product file:
 		if (!@unlink($navBestRes)) {

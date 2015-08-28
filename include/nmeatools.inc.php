@@ -797,7 +797,7 @@ class DateTimeSimple
                 //      $date_format, $zda->year, $zda->month, $zda->day,
                 //      $zda->hh, $zda->mm, $zda->ss
                 //  ), "\n";
-				if ($zda->year != "" && $zda->month != ""&& $zda->day != "" && $zda->hh != "0" && $zda->mm != "0" && $zda->ss != "0") {
+				if ($zda->year != "" && $zda->month != ""&& $zda->day != "" && $zda->hh != "0" && $zda->mm != "0" && $zda->ss != "0" || $zda->year != "1999" && $zda->month != "11" && $zda->day != "30") {
 					break;
 				}
             } else {
@@ -809,7 +809,7 @@ class DateTimeSimple
                     $this->hh    = $unixd->hh;
                     $this->mm    = $unixd->mm;
                     $this->ss    = $unixd->ss;
-					if ($zda->year != "" && $zda->month != ""&& $zda->day != "" && $zda->hh != "0" && $zda->mm != "0" && $zda->ss != "0") {
+					if ($zda->year != "" && $zda->month != ""&& $zda->day != "" && $zda->hh != "0" && $zda->mm != "0" && $zda->ss != "0" || $zda->year != "1999" && $zda->month != "11" && $zda->day != "30") {
 						break;
 					}
                 } else {
@@ -826,7 +826,7 @@ class DateTimeSimple
                         //     $date_format, $rmc->year, $rmc->month, $rmc->day, 
                         //     $rmc->hh, $rmc->mm, $rmc->ss
                         // ),"\n";   
-						if ($zda->year != "" && $zda->month != ""&& $zda->day != "" && $zda->hh != "0" && $zda->mm != "0" && $zda->ss != "0") {
+						if ($zda->year != "" && $zda->month != ""&& $zda->day != "" && $zda->hh != "0" && $zda->mm != "0" && $zda->ss != "0" || $zda->year != "1999" && $zda->month != "11" && $zda->day != "30") {
 							break;
 						}
                     } // end if RMC

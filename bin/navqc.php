@@ -27,6 +27,8 @@ if ($opts['h']) {
     exit(1);
 }
 
+$syntaxErr = "";
+
 
 if ($opts['i'] == null) {
     $syntaxErr .=  "SYNTAX ERROR: Must specify a full res r2rnav file [-i]\n";
@@ -68,7 +70,7 @@ if ($opts['a']) {
     $accelHoriMax = MAX_ACCEL;
 }
 
-if ($syntaxErr) {
+if ($syntaxErr != "") {
     usage();
     echo $syntaxErr;
     exit(1);
@@ -115,7 +117,7 @@ if ($debug) {
 
 //---------- Quality Control of navigation data ----------//
 
-	navqc(
+	@navqc(
 		$navBestResPreQC,
 		$dateStringUTCStart,
 		$dateStringUTCEnd,

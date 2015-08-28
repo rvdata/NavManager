@@ -28,6 +28,8 @@ if ($opts['h']) {
     exit(0);
 }
 
+$syntaxErr = "";
+
 if ($opts['d'] == null) {
 	$syntaxErr .=  "SYNTAX ERROR: Must specify a data directory [-d]\n";
 } else {
@@ -55,7 +57,7 @@ if ($opts['t']) {
 	$dateStringUTCEnd = GPS_END_DATE;
 }
 
-if ($syntaxErr) {
+if ($syntaxErr != "") {
 	usage();
 	echo $syntaxErr;
 	exit(1);
@@ -73,7 +75,7 @@ if ($syntaxErr) {
 		}
 
         list($filelistNavigationRaw, $report)
-            = navdatalist(
+            = @navdatalist(
                 $r2rnav_file_format,
                 $dateStringUTCStart,
                 $dateStringUTCEnd,
@@ -108,7 +110,7 @@ if ($syntaxErr) {
 	}   
 	echo "\tOutput file:       ", $navBestResPreQC, "\n";
 
-	navcopy(
+	@navcopy(
 		$r2rnav_file_format, 
 		$pathNavigationRaw, 
 		$filelistNavigationRaw, 
