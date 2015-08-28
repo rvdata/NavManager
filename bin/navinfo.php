@@ -24,6 +24,8 @@ if ($opts['h']) {
     exit(1);
 }
 
+$syntaxErr = "";
+
 if ($opts['i'] == null) {
     $syntaxErr .=  "SYNTAX ERROR: Must specify a full res r2rnav file [-i]\n";
 } else {
@@ -46,7 +48,7 @@ if ($opts['l']) {
 	$fqalog = null;
 }
 
-if ($syntaxErr) {
+if ($syntaxErr != "") {
     usage();
     echo $syntaxErr;
     exit(1);
@@ -90,7 +92,7 @@ if ($debug) {
 
 	fclose($if);
 
-	$bounds = navbounds($navInfoFile);
+	$bounds = @navbounds($navInfoFile);
 
 
 	echo "\n";

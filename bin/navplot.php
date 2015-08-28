@@ -88,6 +88,8 @@ $opts = getopts(
     ), $argv
 );
 
+$syntaxErr = "";
+
 if (!$opts['i']) {
     $syntaxErr .=  "SYNTAX ERROR: Must specify a  r2rnav file to plot [-i]\n";
 } else {
@@ -99,7 +101,7 @@ if ($opts['h']) {
     exit(1);
 }
 
-if ($syntaxErr) {
+if ($syntaxErr != "") {
     usage();
     echo $syntaxErr;
     exit(1);
