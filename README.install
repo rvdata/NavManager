@@ -81,8 +81,8 @@ Java code:
 Documentation:
         doc/fileformat/format-nav[N].txt: 
           Plain text files describing known fileformats (and content)
-        doc/guide/processing_guide.txt: 
-          Plain text file describing what to look out for when processing nav.
+        doc/guide/NavManager_Cookbook.pdf
+          PDF file containing a cookbook for someone starting out with NavManager
         doc/bestpractices/Recommended-Best-Practices-for-Navigation-Data-Collection.pdf
           PDF file describing recommendations to operators on best practices
           for navigation data collection
