@@ -136,7 +136,7 @@ function usage()
 	echo "Required:\n";
 	echo "\t-d <directory>\n";
 	echo "\t\tPath to directory containing raw navigation data.\n";
-	echo "\t-f <format?\n";
+	echo "\t-f <format>\n";
 	echo "\t\tThe format of raw navigation files. (see navformat.php)\n";
 	echo "\t-o <outfile>\n";
 	echo "\t\tThe destination filename for the raw r2rnav file.\n\n";
