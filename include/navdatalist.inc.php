@@ -1723,7 +1723,7 @@ function navdatalist(
                             // comma-separated values
                             $NavRec = preg_split("/\,/", $line);
                             
-                            $dateStringUTCStartFile = trim($NavRec[1]);
+                            $dateStringUTCStartFile = trim($NavRec[1], " \t\n\r\0\x0B'\"");
                             
                             break;
                             
@@ -1738,7 +1738,7 @@ function navdatalist(
                     
                     $NavRec = preg_split("/\,/", $line);
                     
-                    $dateStringUTCEndFile = trim($NavRec[1]);
+                    $dateStringUTCEndFile = trim($NavRec[1], " \t\n\r\0\x0B'\"");
                     
                     // Check that the start/end date/times in each file overlap the 
                     // start/end date/times entered on the command line:

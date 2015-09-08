@@ -9,6 +9,7 @@ require INCLUDE_PATH . '/navbounds.inc.php';
 require INCLUDE_PATH . '/navcopy.inc.php';
 require INCLUDE_PATH . '/xmltools.inc.php';
 
+ini_set('memory_limit','1024M');
 
 //-------------------------GET OPTS --------------------------------//
 
@@ -110,7 +111,7 @@ if ($syntaxErr != "") {
 	}   
 	echo "\tOutput file:       ", $navBestResPreQC, "\n";
 
-	@navcopy(
+	navcopy(
 		$r2rnav_file_format, 
 		$pathNavigationRaw, 
 		$filelistNavigationRaw, 

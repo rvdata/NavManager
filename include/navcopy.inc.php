@@ -3147,7 +3147,7 @@ function navcopy($inputFormatSpec, $path, $navfilelist, $outfile)
                     $lines = preg_split('/\,/', $line);
                     
                     // External clock:
-                    $dateStringUTC = trim($lines[1]);
+                    $dateStringUTC = trim($lines[1], " \t\n\r\0\x0B'\"");
                     $count = sscanf($dateStringUTC, "%4c-%2c-%2cT%2c:%2c:%s", 
                                     $year, $month, $day, $hour, $minute, $second);
                     $ntp["year"]   = $year;
@@ -3172,21 +3172,24 @@ function navcopy($inputFormatSpec, $path, $navfilelist, $outfile)
                     $ntp["hhmmss"] = floatval(sprintf($time_format, $ntp["hour"], $ntp["minute"], $ntp["second"]));
                     
                     // NMEA string may or may not be double-quoted (""):
-                    if (preg_match("/\"/", $line)) {
-                        
-                        // Get NMEA record in double-quotes (""):
-                        $lines = preg_split("/\"/", $line);
-                        
-                    } else {
-                        
-                        // Use the first character of the NMEA string, a dollar-sign ($):
-                        $lines = preg_split('/\$/', $line);
-                        // preg_split removes leading '$' from NMEA string.  Put it back:
-                        $lines[1] = '$' . $lines[1];
-                        
-                    }
+#                    if (preg_match("/\"/", $line)) {
+#                        
+#                        // Get NMEA record in double-quotes (""):
+#                        $lines = preg_split("/\"/", $line);
+#                        
+#                    } else {
+#                        
+#                        // Use the first character of the NMEA string, a dollar-sign ($):
+#                        $lines = preg_split('/\$/', $line);
+#                        // preg_split removes leading '$' from NMEA string.  Put it back:
+#                        $lines[1] = '$' . $lines[1];
+#                        
+#                    }
+
+					// Quotes may be present in various forms on all strings - try splitting on comma
+					$lines = preg_split("/\, /", $line);
                     
-                    $nmea->init($lines[1]);
+                    $nmea->init(trim($lines[2], " \t\n\r\0\x0B'\""));
                     
                     // Is checksum valid?  (We don't allow data without checksums to be processed.)
                     if ($nmea->validCheckSum === true) {
