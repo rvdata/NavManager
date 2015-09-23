@@ -228,19 +228,19 @@ $lon0 = $west + $length/$km_per_degree;
 $niceness = 20;
 $beNice = "nice -n $niceness ";
 
-$cmd_str = "gmtset PAPER_MEDIA letter PLOT_DEGREE_FORMAT D ANNOT_FONT_SIZE_PRIMARY 8";
-run_cmd("gmtset", $beNice . $cmd_str); 
+$cmd_str = "gmt gmtset PAPER_MEDIA letter PLOT_DEGREE_FORMAT D ANNOT_FONT_SIZE_PRIMARY 8";
+run_cmd("gmt gmtset", $beNice . $cmd_str); 
 
 #echo "pscoast -J${proj}${width} -R$west/$east/$south/$north -B${xinfo}a${yinfo}WSen -D$coastres -I$rivertype -A1000 -W2 -Yc -Xc -Lf$lon0/$lat0/$slat/$length+l -P -K -V > $navPlot\n";
 
-$cmd_str = "pscoast -J${proj}${width} -R$west/$east/$south/$north -B${xinfo}a${yinfo}WSen -D$coastres -I$rivertype -A1000 -W2 -Yc -Xc -Lf$lon0/$lat0/$slat/$length+l -P -K -S132/112/255 -G85/107/47 -V> $navPlot";
-run_cmd("pscoast", $beNice . $cmd_str);
+$cmd_str = "gmt pscoast -J${proj}${width} -R$west/$east/$south/$north -B${xinfo}a${yinfo}WSen -D$coastres -I$rivertype -A1000 -W2 -Yc -Xc -Lf$lon0/$lat0/$slat/$length+l -P -K -S132/112/255 -G85/107/47 -V> $navPlot";
+run_cmd("gmt pscoast", $beNice . $cmd_str);
 
 #$cmd_str = "awk 'NR>3 {print $2, $3}' $navControl | psxy -J -R -Wred -Sc5p -O -K -V >> $navPlot";
 #run_cmd("psxy (symbols)", $beNice . $cmd_str);
 
-$cmd_str = "awk 'NR>3 {print $2, $3}' $navControl | psxy -J -R -W1.5p,red -O -K -V >> $navPlot";
-run_cmd("psxy (line)", $beNice . $cmd_str);
+$cmd_str = "awk 'NR>3 {print $2, $3}' $navControl | gmt psxy -J -R -W1.5p,red -O -K -V >> $navPlot";
+run_cmd("gmt psxy (line)", $beNice . $cmd_str);
 
 #$cmd_str = "awk 'NR>3 && NR%10==0 {print $2, $3, " . $fontsize . ", " . $textangle . ", " . $fontno . ", \"" . $justify . "\", $1}' $navControl | pstext -J -R -Gred -O -V >> $navPlot";
 #run_cmd("pstext", $beNice . $cmd_str);
