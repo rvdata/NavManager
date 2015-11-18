@@ -94,20 +94,25 @@ if ($debug) {
 
 	$bounds = @navbounds($navInfoFile);
 
-
-	echo "\n";
-	echo "Navigation Start/End Info:\n";
-	echo "\tStart Date:\t", $dateStringUTCStart, "\n"; 
-	echo "\tEnd Date:\t", $dateStringUTCEnd, "\n"; 
-	echo "\tStart Lat/Lon:\t[", $portLatitudeStart, ",", $portLongitudeStart, "]\n"; 
-	echo "\tEnd Lat/Lon:\t[", $portLatitudeEnd, ",", $portLongitudeEnd, "]\n"; 
-	echo "\n";
-	echo "Navigation Bounding Box Info:\n";
-	echo "\tMinimum Longitude:\t", $bounds->westBoundLongitude, "\n"; 
-	echo "\tMaximum Longitude:\t", $bounds->eastBoundLongitude, "\n"; 
-	echo "\tMinimum Latitude:\t", $bounds->southBoundLatitude, "\n"; 
-	echo "\tMaximum Latitude:\t", $bounds->northBoundLatitude, "\n"; 
-
+    $output = '';
+    $output = $output . "Navigation Start/End Info:\n";
+    $output = $output . "\tStart Date:\t" . $dateStringUTCStart . "\n"; 
+    $output = $output . "\tEnd Date:\t" . $dateStringUTCEnd . "\n"; 
+    $output = $output . "\tStart Lat/Lon:\t[" . $portLatitudeStart . "," . $portLongitudeStart . "]\n"; 
+    $output = $output . "\tEnd Lat/Lon:\t[" . $portLatitudeEnd . "," . $portLongitudeEnd . "]\n"; 
+    $output = $output . "\n";
+    $output = $output . "Navigation Bounding Box Info:\n";
+    $output = $output . "\tMinimum Longitude:\t" . $bounds->westBoundLongitude . "\n";
+    $output = $output . "\tMaximum Longitude:\t" . $bounds->eastBoundLongitude . "\n";
+    $output = $output . "\tMinimum Latitude:\t" . $bounds->southBoundLatitude . "\n";
+    $output = $output . "\tMaximum Latitude:\t" . $bounds->northBoundLatitude . "\n";
+	
+	if ($fqalog != null) {
+		fwrite($fqalog, $output);
+		fclose($fqalog);
+	} else {
+        echo $output;
+	}
 
 #var_dump($qaNavigationRaw);
 /**
