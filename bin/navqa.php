@@ -16,7 +16,8 @@ $opts = getopts(
         'v' => array('switch' => array('v', 'max_speed'), 'type' => GETOPT_VAL),
         'a' => array('switch' => array('a', 'max_accel'), 'type' => GETOPT_VAL),
         'g' => array('switch' => array('g', 'max_gap'), 'type' => GETOPT_VAL),
-        'l' => array('switch' => array('l', 'log'), 'type' => GETOPT_VAL),
+        'l' => array('switch' => array('l', 'logfile'), 'type' => GETOPT_VAL),
+        'j' => array('switch' => array('j', 'jsonfile'), 'type' => GETOPT_VAL),
         'h' => array('switch' => array('h', 'help'), 'type' => GETOPT_SWITCH),
     ), $argv
 );
@@ -51,6 +52,19 @@ if ($opts['l']) {
 } else {
 	$fqalog = null;
 }
+
+if ($opts['j']) {
+    $qajsonfile = trim($opts['j']);
+    $fqajson = fopen($qajsonfile, 'w');
+    if ($fqajson == null) {
+        echo "navqa: Could not open json file for writing: "
+            . $qajsonfile . "\n";
+        exit(1);
+    }
+} else {
+	$fqajson = null;
+}
+
 
 if ($opts['v']) {
 	$speedHoriMax = trim($opts['v']);
@@ -130,7 +144,7 @@ if ($debug) {
 
     $output = '';
     $output = "Duration and range of values:\n" . $output;
-    $output =  $output . "\tEpoch Interval [" . $qaNavigationRaw->duration_and_range_of_values->Epoch_Interval->value . "]: " . $qaNavigationRaw->duration_and_range_of_values->Epoch_Interval->uom . "\n";
+    $output =  $output . "\tEpoch Interval [" . $qaNavigationRaw->duration_and_range_of_values->Epoch_Interval->uom . "]: " . $qaNavigationRaw->duration_and_range_of_values->Epoch_Interval->value . "\n";
     $output =  $output . "\tMaximum Altitude [" . $qaNavigationRaw->duration_and_range_of_values->Maximum_Altitude->uom . "]: " . $qaNavigationRaw->duration_and_range_of_values->Maximum_Altitude->value . "\n";
     $output =  $output . "\tMinimum Altitude [" . $qaNavigationRaw->duration_and_range_of_values->Minimum_Altitude->uom . "]: " . $qaNavigationRaw->duration_and_range_of_values->Minimum_Altitude->value . "\n";
     $output =  $output . "\tMaximum Horizontal Speed [" . $qaNavigationRaw->duration_and_range_of_values->Maximum_Horizontal_Speed->uom . "]: " . $qaNavigationRaw->duration_and_range_of_values->Maximum_Horizontal_Speed->value . "\n";
@@ -167,6 +181,10 @@ if ($debug) {
 		echo $output;
 	}
 
+	if ($fqajson != null) {    
+        fwrite($fqajson, json_encode($qaNavigationRaw));
+		fclose($fqajson);
+	}
 
 #var_dump($qaNavigationRaw);
 /**
@@ -194,6 +212,8 @@ function usage()
 	echo "\t\tSpecify the maximum allowable time gap in data in seconds. Default: " . MAX_GAP . "\n\n";
 	echo "\t-l or --logfile <logfile>\n\n";
 	echo "\t\tSpecify a logfile for the qa report.\n\n";
+	echo "\t-j or --jsonfile <jsonfile>\n\n";
+	echo "\t\tSpecify a json file for the qa report.\n\n";
     echo "\t-h or --help\n\n";
     echo "\t\tShow this help message.\n\n";
     echo "\n";
