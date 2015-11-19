@@ -15,6 +15,7 @@ ini_set('memory_limit','1024M');
 
 $opts = getopts(
     array(
+        'i' => array('switch' => array('i', 'infile'), 'type'=> GETOPT_VAL),
         'd' => array('switch' => array('d', 'data_directory'), 'type' => GETOPT_VAL),
         'o' => array('switch' => array('o', 'outfile'), 'type' => GETOPT_VAL),
         'f' => array('switch' => array('f', 'format'), 'type' => GETOPT_VAL),
@@ -31,10 +32,19 @@ if ($opts['h']) {
 
 $syntaxErr = "";
 
-if ($opts['d'] == null) {
-	$syntaxErr .=  "SYNTAX ERROR: Must specify a data directory [-d]\n";
+if (($opts['i'] != null) && ($opts['d'] != null)) {
+    $syntaxErr .=  "SYNTAX ERROR: Cannot have an input file AND a directory for the r2rnav product [-i] | [-d]\n";
+} elseif (($opts['i'] == null) && ($opts['d'] == null)) {
+    $syntaxErr .=  "SYNTAX ERROR: Must specify either an input file OR a directory for the r2rnav product [-i] | [-d]\n";
 } else {
-	$pathNavigationRaw = trim($opts['d']);
+
+    if ($opts['i'] != null) {
+        $inputFile = trim($opts['i']);
+    }
+
+    if ($opts['d'] != null) {
+        $pathNavigationRaw = trim($opts['d']);
+    }
 }
 
 if ($opts['f'] == null) {
@@ -69,42 +79,56 @@ if ($syntaxErr != "") {
 
         echo "Running navdatalist() with:\n";
         echo "\tR2R_fileformat_id: ", $r2rnav_file_format, "\n";
-        echo "\tData path:         ", $pathNavigationRaw, "\n";
+        echo ($opts['d']? "\tData path:         " . $pathNavigationRaw . "\n" : "\tData file:         " . $inputFile . "\n");
 		if ($opts['t']) {
 			echo "\tStart:             ", $dateStringUTCStart, "\n";
 			echo "\tEnd:               ", $dateStringUTCEnd, "\n";
 		}
 
-        list($filelistNavigationRaw, $report)
-            = @navdatalist(
-                $r2rnav_file_format,
-                $dateStringUTCStart,
-                $dateStringUTCEnd,
-                $pathNavigationRaw
-            );
+        $filelistNavigationRaw = array();
 
-        if ($report) {
-            // Report on (1) Gaps between parseable files that last longer
-            // than 12 hours, (2) Files that could not be parsed, and/or 
-            // (3) Files that could be parsed, but do not fall within the
-            // cruise start/end dates.
-            foreach ($report as $statement) {
-                echo $statement,"\n";
+        if ($opts['i']) {
+            if(is_file($inputFile) && is_readable($inputFile)) {
+                $path_parts = pathinfo($inputFile);
+                $pathNavigationRaw = $path_parts['dirname'];
+                array_push($filelistNavigationRaw, $path_parts['basename']);  
+            } else {
+                echo "ERROR: Input file does not exist or is unreadable.\n";
             }
+        } else {
+
+            list($filelistNavigationRaw, $report)
+                = @navdatalist(
+                    $r2rnav_file_format,
+                    $dateStringUTCStart,
+                    $dateStringUTCEnd,
+                    $pathNavigationRaw
+                );
+
+            if ($report) {
+                // Report on (1) Gaps between parseable files that last longer
+                // than 12 hours, (2) Files that could not be parsed, and/or 
+                // (3) Files that could be parsed, but do not fall within the
+                // cruise start/end dates.
+                foreach ($report as $statement) {
+                    echo $statement,"\n";
+                }
+            }
+
+            echo "navdatalist(): Done.\n";
+            echo "\n";
         }
 
-        echo "navdatalist(): Done.\n";
-        echo "\n";
-
-		if(!$filelistNavigationRaw) {
-			exit(1);
+		if ((!$filelistNavigationRaw) || (sizeof($filelistNavigationRaw) == 0)) {
+			echo "ERROR: No files to process, exiting.\n\n";
+            exit(1);
 		}
 
 	//----- Convert primary raw navigation data into R2R standard format -----//
 
 	echo "Running navcopy() with:\n";
 	echo "\tR2R_fileformat_id: ", $r2rnav_file_format, "\n";
-	echo "\tData path:         ", $pathNavigationRaw, "\n";
+    echo "\tData path:         ", $pathNavigationRaw, "\n";
 	echo "\tData files:\n";
 	foreach ($filelistNavigationRaw as $fileRaw) {
 		echo "\t\t", $fileRaw, "\n";
@@ -132,9 +156,11 @@ function usage()
     echo "Rolling Deck To Repository (R2R): Navigation Manager\n";
     echo "Purpose: Convert raw nav data to the r2rnav standard format.\n";
     echo "\n";
-    echo "Usage: navcopy.php -d <data_diretory> -o <outifle> [-t <time range>] [-h]\n\n";
+    echo "Usage: navcopy.php -i <input file> | -d <data_diretory> -f <format> -o <outifle> [-t <time range>] [-h]\n\n";
 	echo "Required:\n";
-	echo "\t-d <directory>\n";
+	echo "\t-i <input file>\n";
+	echo "\t\tPath to directory containing raw navigation data.\n";
+	echo "\t-d <data_directory>\n";
 	echo "\t\tPath to directory containing raw navigation data.\n";
 	echo "\t-f <format>\n";
 	echo "\t\tThe format of raw navigation files. (see navformat.php)\n";
