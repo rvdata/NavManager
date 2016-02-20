@@ -601,7 +601,10 @@ function navcopy($inputFormatSpec, $path, $navfilelist, $outfile)
 
                                         $delt = $gpsBuffer[$inx+1]->gga->hhmmss - $gpsBuffer[$inx]->gga->hhmmss;
                                     
-                                        if ($gpsBuffer[$inx+1]->gga->hhmmss < $gpsBuffer[$inx]->gga->hhmmss && $delt < -100000) {
+										// Added for Falkor to skip duplicate records caused by rounding seconds CJO 
+										if ($delt == 0) {
+											continue;
+                                        } elseif ($gpsBuffer[$inx+1]->gga->hhmmss < $gpsBuffer[$inx]->gga->hhmmss && $delt < -100000) {
                                             // Date has advanced.  Convert date to unix time, add 1 day, 
                                             // and convert back to date:
                                             $dateUnix = strtotime("+1 day", gmmktime(0, 0, 0, $gpsBuffer[$inx]->gga->month, $gpsBuffer[$inx]->gga->day, $gpsBuffer[$inx]->gga->year));
@@ -670,8 +673,11 @@ function navcopy($inputFormatSpec, $path, $navfilelist, $outfile)
                 //if ($isSamePCDay) {  // HACK for PE13-30, PE14-05 (gaps > 1 day)
  
                     $delt = $gpsBuffer[$inx+1]->gga->hhmmss - $gpsBuffer[$inx]->gga->hhmmss;
-                
-                    if ($gpsBuffer[$inx+1]->gga->hhmmss < $gpsBuffer[$inx]->gga->hhmmss && $delt < -100000) {
+              
+					// Added for Falkor to skip duplicate records caused by rounding seconds CJO 
+					if ($delt == 0) {
+						continue;
+                    } elseif ($gpsBuffer[$inx+1]->gga->hhmmss < $gpsBuffer[$inx]->gga->hhmmss && $delt < -100000) {
                         // Date has advanced.  Convert date to unix time, add 1 day, 
                         // and convert back to date:
                         $dateUnix = strtotime( "+1 day", gmmktime(0, 0, 0, $gpsBuffer[$inx]->gga->month, $gpsBuffer[$inx]->gga->day, $gpsBuffer[$inx]->gga->year) );
