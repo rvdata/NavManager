@@ -81,7 +81,7 @@ if ($syntaxErr != "") {
 
 // Get port start/end info from first/last line of file
 
-		$if = fopen($navBestResPreQC, r);
+		$if = fopen($navBestResPreQC, 'r');
 
 		$headerPattern =  preg_quote(HEADER, '/');
 		$firstLine = firstLine($if, $headerPattern);
