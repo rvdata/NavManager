@@ -601,7 +601,10 @@ function navcopy($inputFormatSpec, $path, $navfilelist, $outfile)
 
                                         $delt = $gpsBuffer[$inx+1]->gga->hhmmss - $gpsBuffer[$inx]->gga->hhmmss;
                                     
-                                        if ($gpsBuffer[$inx+1]->gga->hhmmss < $gpsBuffer[$inx]->gga->hhmmss && $delt < -100000) {
+										// Added for Falkor to skip duplicate records caused by rounding seconds CJO 
+										if ($delt == 0) {
+											continue;
+                                        } elseif ($gpsBuffer[$inx+1]->gga->hhmmss < $gpsBuffer[$inx]->gga->hhmmss && $delt < -100000) {
                                             // Date has advanced.  Convert date to unix time, add 1 day, 
                                             // and convert back to date:
                                             $dateUnix = strtotime("+1 day", gmmktime(0, 0, 0, $gpsBuffer[$inx]->gga->month, $gpsBuffer[$inx]->gga->day, $gpsBuffer[$inx]->gga->year));
@@ -670,8 +673,11 @@ function navcopy($inputFormatSpec, $path, $navfilelist, $outfile)
                 //if ($isSamePCDay) {  // HACK for PE13-30, PE14-05 (gaps > 1 day)
  
                     $delt = $gpsBuffer[$inx+1]->gga->hhmmss - $gpsBuffer[$inx]->gga->hhmmss;
-                
-                    if ($gpsBuffer[$inx+1]->gga->hhmmss < $gpsBuffer[$inx]->gga->hhmmss && $delt < -100000) {
+              
+					// Added for Falkor to skip duplicate records caused by rounding seconds CJO 
+					if ($delt == 0) {
+						continue;
+                    } elseif ($gpsBuffer[$inx+1]->gga->hhmmss < $gpsBuffer[$inx]->gga->hhmmss && $delt < -100000) {
                         // Date has advanced.  Convert date to unix time, add 1 day, 
                         // and convert back to date:
                         $dateUnix = strtotime( "+1 day", gmmktime(0, 0, 0, $gpsBuffer[$inx]->gga->month, $gpsBuffer[$inx]->gga->day, $gpsBuffer[$inx]->gga->year) );
@@ -5441,6 +5447,110 @@ function navcopy($inputFormatSpec, $path, $navfilelist, $outfile)
 		} // end if (isset())
 		break;
 
+
+	// Parser for general csvs, just have to point to the correct columns
+	// This was made to parse .elg files from Endeavor cruises where the nave went missing
+    case "nav26":
+        
+        //----------- Initialize variables: -----------//    
+        $dateBufferLast = null;  // Initially unknown date.
+        
+        // Need to loop over all nav files in a cruise, in the order specified
+        // by external control file.
+        foreach ($navfilelist as $line) {
+
+            if ($line == "") break;
+            $filename = $path . "/" . $line;
+            $fid = fopen($filename, 'r');
+            
+            $inx = 1;  // Record index
+            //----------- Loop Over Contents of Single File ----------//
+            while (!feof($fid)) {
+                
+                $line = trim(fgets($fid));
+                
+                if (($inx > 1)  && ($line != "")) {  // Skip over header record and any blank lines.
+
+					$NavRec = preg_split("/\,/", $line);  // comma-separated values
+
+
+					if (count($NavRec) > 15) {
+
+						$dateRec = preg_split("/\-/", $NavRec[0]);  // values separated by dash "-"
+
+						$month = $dateRec[0];
+						$day = $dateRec[1];
+						$year = $dateRec[2];
+
+						$hour = substr($NavRec[11], 0, 2); 
+						$min = substr($NavRec[11], 2, 2); 
+						$sec = substr($NavRec[11], 4);
+                    
+                            
+                            if (preg_match("/\./", $sec)) {
+                                $roz = preg_split('/\./', $sec);
+                                $tim_nroz = strlen($roz[1]);
+                            } else {
+                                $tim_nroz = 0;
+                            }
+                            
+                            // Print exactly the same precision time stamp as in the recorded data.
+                            if ($tim_nroz == 0) {
+                                $time_format = "%4d-%02d-%02dT%02d:%02d:%02dZ";
+                            } else {
+                                $time_format = "%4d-%02d-%02dT%02d:%02d:%0" . ($tim_nroz + 3) . "." . $tim_nroz . "fZ";
+                            }
+                            
+                            $lat = $NavRec[12];
+                            $lon = $NavRec[13];
+                            $qual = $NavRec[14];
+                            $nsat = $NavRec[15];
+                            $hdop = $NavRec[16];
+                            
+                            // Determine the number of digits to the right of the decimal (lon):
+                            $roz = preg_split("/\./", $lon);
+                            $lon_nroz = strlen($roz[1]);
+                            
+                            // Determine the number of digits to the right of the decimal (lat):
+                            $roz = preg_split("/\./", $lat);
+                            $lat_nroz = strlen($roz[1]);
+                            
+                            // Preserve the precision of the original decimal longitude and latitude:
+                            $lon_format = "%." . $lon_nroz . "f";
+                            $lat_format = "%." . $lat_nroz . "f";
+                            
+                            // Format for quality info:
+                            $qual_format = "%s\t%s\t%s";
+                            
+                            // This format does not record altitude.  Fill in with "NAN".
+                            $alt  = "NAN";
+                            
+                            $datestamp = sprintf( $time_format, $year, $month, $day, $hour, $min, 
+                                                  $sec);
+                            
+                            $print_format = "%s\t" . $lon_format . "\t" . $lat_format . "\t" .
+                                $qual_format . "\t%s\n";
+                            
+                            fprintf(
+                                $fout, $print_format,
+                                $datestamp, $lon, $lat,
+                                $qual, $nsat, $hdop, $alt
+                            );
+                            
+                        
+					} // end if not header record
+
+				} // end if NavRec length is too short
+                
+                $inx++;
+                
+            } //end while (!feof($fid))
+            
+            fclose($fid);
+            
+        } // end foreach($navfilelist as $line)
+        //------------ End Main Loop Over All Nav Files ------------//
+        break;
 
 
     case "uhdas": 
