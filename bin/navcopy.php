@@ -156,7 +156,7 @@ function usage()
     echo "Rolling Deck To Repository (R2R): Navigation Manager\n";
     echo "Purpose: Convert raw nav data to the r2rnav standard format.\n";
     echo "\n";
-    echo "Usage: navcopy.php -i <input file> | -d <data_diretory> -f <format> -o <outifle> [-t <time range>] [-h]\n\n";
+    echo "Usage: navcopy.php -d <data_diretory> -f <format> -o <outifle> [-t <time range>] [-h]\n\n";
 	echo "Required:\n";
 	echo "\t-i <input file>\n";
 	echo "\t\tPath to directory containing raw navigation data.\n";
