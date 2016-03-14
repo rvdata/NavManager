@@ -65,6 +65,7 @@ function navqc(
     $maxIter = 3;  // Max num of iterations to loop through buffer,
                    // flagging positions
     //--------- End Initialize Variables ------------//
+
     
     if (!file_exists($infile)) {
         echo "navqc(): Could not locate file: " . $infile . "\n";
@@ -543,9 +544,10 @@ function navqc(
                             // May need to turn both for loops into while loops:
                             for ($inx=1; $inx<$inxMax; $inx++) {
                                 
-                                if ($epochOK[$inx]) {  // Skip flagged positions
+				// Flipped check - Webb Pinner
+                                if (!$epochOK[$inx]) {  // Skip flagged positions
                                     // Get index of next position that is ok:
-                                    
+
                                     for ($jnx=$inx+1; $jnx<$jnxMax;$jnx++) {
                                         if ($epochOK[$jnx]) {
                                             break;
@@ -578,9 +580,11 @@ function navqc(
                                     if ($verbose) {
                                         
                                         $secFormat = "%." . $timeNROD[$inx] . "f";
+/* Commented out by Webb Pinner
                                         fprintf($flog, "Excessive Speed: %s m/s, Time increment: %s sec\n",
                                                 sprintf("%.2f", $speedHori[$vnx]), 
                                                 sprintf($secFormat, ($utim[$jnx] - $utim[$inx])));
+*/ //Commented out by Webb Pinner
                                         $lonFormat = ($lon[$inx] != "NAN") ? ("%." . $lonNROD[$inx] . "f") : "%s";
                                         $latFormat = ($lat[$inx] != "NAN") ? ("%." . $latNROD[$inx] . "f") : "%s";
                                         $secFracFormat = "%0" . $timeNROD[$inx] . "d";
@@ -609,6 +613,7 @@ function navqc(
                                                         sprintf($latFormat, $lat[$inx])); 
                                             }
                                         }
+/* Commented out by Webb Pinner
                                         if ($timeNROD[$jnx] > 0) {
                                             $epochRFC5424 = gmdate("Y-m-d\TH:i:s", $utim[$jnx]) . "." .
                                                 sprintf($secFracFormat, round(pow(10, $timeNROD[$jnx]) * ($utim[$jnx] - floor($utim[$jnx])))) . "Z";
@@ -633,6 +638,7 @@ function navqc(
                                                         sprintf($latFormat, $lat[$jnx]));
                                             }
                                         }
+*/ //Commented out by Webb Pinner
                                         
                                     } // end if verbose
                                     //---------- END VERBOSE ------------//
@@ -1019,6 +1025,7 @@ function navqc(
                         $utim[$jnx], $lon[$jnx], $lat[$jnx]
                     );
                     $tvel[$vnx] = 0.5 * ( $utim[$jnx] + $utim[$inx] );
+
                     if ($speedHori[$vnx] > $speedLimit) {
                         if ($speedReasonableAll) {
                             $speedReasonableAll = false;

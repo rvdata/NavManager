@@ -53,22 +53,23 @@ if ($opts['l']) {
 		echo "navmanager: Could not open log file for writing: "
 			. $qclogfile . "\n";
 		exit(1);
-	}   
+	}
 } else {
 	$fqclog = null;
 }
 
-if ($opts['v']) {
-    $speedHoriMax = trim($opts['v']);
+if ($opts['v'] == null) {
+    $speedHoriMax = floatval(MAX_SPEED);
 } else {
-    $speedHoriMax = MAX_SPEED;
+    $speedHoriMax = floatval(trim($opts['v']));
 }
 
-if ($opts['a']) {
-    $accelHoriMax = trim($opts['a']);
+if ($opts['a'] == null) {
+    $accelHoriMax = floatval(MAX_ACCEL);
 } else {
-    $accelHoriMax = MAX_ACCEL;
+    $accelHoriMax = floatval(trim($opts['a']));
 }
+
 
 if ($syntaxErr != "") {
     usage();
