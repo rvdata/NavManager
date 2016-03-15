@@ -613,7 +613,6 @@ function navqc(
                                                         sprintf($latFormat, $lat[$inx])); 
                                             }
                                         }
-/* Commented out by Webb Pinner
                                         if ($timeNROD[$jnx] > 0) {
                                             $epochRFC5424 = gmdate("Y-m-d\TH:i:s", $utim[$jnx]) . "." .
                                                 sprintf($secFracFormat, round(pow(10, $timeNROD[$jnx]) * ($utim[$jnx] - floor($utim[$jnx])))) . "Z";
@@ -638,21 +637,20 @@ function navqc(
                                                         sprintf($latFormat, $lat[$jnx]));
                                             }
                                         }
-*/ //Commented out by Webb Pinner
-                                        
+
                                     } // end if verbose
                                     //---------- END VERBOSE ------------//
-                                    
+
                                     // Insert code here to test if two successive speeds are unreasonable.
-                                    
+
                                     //} // if excessive speed
-                                    
+
                                     $vnx++;
-                                    
+
                                 } // end if epochOK
-                                
+
                             }  // end loop over utim
-                            
+
                             // If two successive speeds are unreasonable, then the middle position
                             // is flagged.
                             //	      $vnxMax = count($speedHori);
