@@ -128,6 +128,9 @@ function navdatalist(
 	   	    // "nav25": raw NMEA: GGA + ZDA
 	 	    // Vessels: Sikuliaq           
 	 	case "nav25":
+	   	    // "nav27": raw NMEA: GLL + ZDA
+	 	    // Vessels: Sproul           
+	 	case "nav27":
             // "nav20": external clock + tags + raw NMEA: GGA + ZDA
             // Vessels: Knorr (2013+)
         case "nav20":
