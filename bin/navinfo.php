@@ -14,7 +14,8 @@ $opts = getopts(
     array(
         'i' => array('switch' => array('i', 'infile'), 'type' => GETOPT_VAL),
         'h' => array('switch' => array('h', 'help'), 'type' => GETOPT_SWITCH),
-        'l' => array('switch' => array('l', 'log'), 'type' => GETOPT_VAL),
+        'l' => array('switch' => array('l', 'logfile'), 'type' => GETOPT_VAL),
+        'j' => array('switch' => array('j', 'jsonfile'), 'type' => GETOPT_VAL),
     ), $argv
 );
 
@@ -48,6 +49,18 @@ if ($opts['l']) {
 	$fqalog = null;
 }
 
+if ($opts['j']) {
+    $qajsonfile = trim($opts['j']);
+    $fqajson = fopen($qajsonfile, 'w');
+    if ($fqajson == null) {
+        echo "navinfo: Could not open json file for writing: "
+            . $qajsonfile . "\n";
+        exit(1);
+    }
+} else {
+	$fqajson = null;
+}
+
 if ($syntaxErr != "") {
     usage();
     echo $syntaxErr;
@@ -63,7 +76,7 @@ if ($syntaxErr != "") {
 
 // DEBUG stuff
 
-$debug = '';
+$debug = false;
 
 if ($debug) {
 	echo "\n";
@@ -94,20 +107,34 @@ if ($debug) {
 
 	$bounds = @navbounds($navInfoFile);
 
+    $startStop = (object) array('startTimestamp' => $dateStringUTCStart, 'endTimestamp' => $dateStringUTCStart, 'startLatLon' => array($portLatitudeStart,$portLongitudeStart), 'endLatLon' => array($portLatitudeEnd, $portLongitudeEnd));
+    
+    $outputObj = (object) array('startStop' => $startStop, 'boundingBox' => $bounds);
 
-	echo "\n";
-	echo "Navigation Start/End Info:\n";
-	echo "\tStart Date:\t", $dateStringUTCStart, "\n"; 
-	echo "\tEnd Date:\t", $dateStringUTCEnd, "\n"; 
-	echo "\tStart Lat/Lon:\t[", $portLatitudeStart, ",", $portLongitudeStart, "]\n"; 
-	echo "\tEnd Lat/Lon:\t[", $portLatitudeEnd, ",", $portLongitudeEnd, "]\n"; 
-	echo "\n";
-	echo "Navigation Bounding Box Info:\n";
-	echo "\tMinimum Longitude:\t", $bounds->westBoundLongitude, "\n"; 
-	echo "\tMaximum Longitude:\t", $bounds->eastBoundLongitude, "\n"; 
-	echo "\tMinimum Latitude:\t", $bounds->southBoundLatitude, "\n"; 
-	echo "\tMaximum Latitude:\t", $bounds->northBoundLatitude, "\n"; 
+    $output = '';
+    $output = $output . "Navigation Start/End Info:\n";
+    $output = $output . "\tStart Date:\t" . $outputObj->startStop->startTimestamp . "\n"; 
+    $output = $output . "\tEnd Date:\t" . $outputObj->startStop->endTimestamp . "\n"; 
+    $output = $output . "\tStart Lat/Lon:\t[" . $outputObj->startStop->startLatLon[0] . "," . $outputObj->startStop->startLatLon[1] . "]\n"; 
+    $output = $output . "\tEnd Lat/Lon:\t[" . $outputObj->startStop->endLatLon[0] . "," . $outputObj->startStop->endLatLon[1] . "]\n"; 
+    $output = $output . "\n";
+    $output = $output . "Navigation Bounding Box Info:\n";
+    $output = $output . "\tMinimum Longitude:\t" . $outputObj->boundingBox->westBoundLongitude . "\n";
+    $output = $output . "\tMaximum Longitude:\t" . $outputObj->boundingBox->eastBoundLongitude . "\n";
+    $output = $output . "\tMinimum Latitude:\t" . $outputObj->boundingBox->southBoundLatitude . "\n";
+    $output = $output . "\tMaximum Latitude:\t" . $outputObj->boundingBox->northBoundLatitude . "\n";
+	
+	if ($fqalog != null) {
+		fwrite($fqalog, $output);
+		fclose($fqalog);
+	} else {
+        echo $output;
+	}
 
+    if ($fqajson != null) {
+		fwrite($fqajson, json_encode($outputObj));
+		fclose($fqajson);
+	}
 
 #var_dump($qaNavigationRaw);
 /**
@@ -120,7 +147,7 @@ function usage()
     echo "Rolling Deck To Repository (R2R): Navigation Manager\n";
     echo "Purpose: Get basic info on an r2rnav file.\n";
     echo "\n";
-    echo "Usage: navinfo.php -i <infile> [-l <logfile>] [-h]\n";
+    echo "Usage: navinfo.php -i <infile> [-l <logfile>] [-j <jsonfile>] [-h]\n";
     echo "\n";
     
 } // end function usage()

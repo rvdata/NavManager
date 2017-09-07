@@ -16,7 +16,8 @@ $opts = getopts(
         'v' => array('switch' => array('v', 'max_speed'), 'type' => GETOPT_VAL),
         'a' => array('switch' => array('a', 'max_accel'), 'type' => GETOPT_VAL),
         'g' => array('switch' => array('g', 'max_gap'), 'type' => GETOPT_VAL),
-        'l' => array('switch' => array('l', 'log'), 'type' => GETOPT_VAL),
+        'l' => array('switch' => array('l', 'logfile'), 'type' => GETOPT_VAL),
+        'j' => array('switch' => array('j', 'jsonfile'), 'type' => GETOPT_VAL),
         'h' => array('switch' => array('h', 'help'), 'type' => GETOPT_SWITCH),
     ), $argv
 );
@@ -51,6 +52,19 @@ if ($opts['l']) {
 } else {
 	$fqalog = null;
 }
+
+if ($opts['j']) {
+    $qajsonfile = trim($opts['j']);
+    $fqajson = fopen($qajsonfile, 'w');
+    if ($fqajson == null) {
+        echo "navqa: Could not open json file for writing: "
+            . $qajsonfile . "\n";
+        exit(1);
+    }
+} else {
+	$fqajson = null;
+}
+
 
 if ($opts['v']) {
 	$speedHoriMax = trim($opts['v']);
@@ -100,7 +114,7 @@ if ($syntaxErr != "") {
 
 // DEBUG stuff
 
-$debug = 'TRUE';
+$debug = false;
 
 if ($debug) {
 	echo "\n";
@@ -115,11 +129,7 @@ if ($debug) {
 	echo "\tDeparture Port Latitude:  ", $portLatitudeStart, "\n";
 	echo "\tArrival Port Longitude:   ", $portLongitudeEnd, "\n";
 	echo "\tArrival Port Latitude:    ", $portLatitudeEnd, "\n";
-	if ($fqalog != null) {
-		echo "\tLog file:                 ", $qalogfile, "\n";
-	} else {
-		echo "\tLog file:                none\n";
-	}   
+    echo "\tLog file:                 ", ($opts['l']? $qalogfile: "none"), "\n";
 }
 
 // END DEBUG stuff
@@ -132,8 +142,49 @@ if ($debug) {
 		$fqalog
 	);
 
-	var_dump($qaNavigationRaw);
+    $output = '';
+    $output = "Duration and range of values:\n" . $output;
+    $output =  $output . "\tEpoch Interval [" . $qaNavigationRaw->duration_and_range_of_values->Epoch_Interval->uom . "]: " . $qaNavigationRaw->duration_and_range_of_values->Epoch_Interval->value . "\n";
+    $output =  $output . "\tMaximum Altitude [" . $qaNavigationRaw->duration_and_range_of_values->Maximum_Altitude->uom . "]: " . $qaNavigationRaw->duration_and_range_of_values->Maximum_Altitude->value . "\n";
+    $output =  $output . "\tMinimum Altitude [" . $qaNavigationRaw->duration_and_range_of_values->Minimum_Altitude->uom . "]: " . $qaNavigationRaw->duration_and_range_of_values->Minimum_Altitude->value . "\n";
+    $output =  $output . "\tMaximum Horizontal Speed [" . $qaNavigationRaw->duration_and_range_of_values->Maximum_Horizontal_Speed->uom . "]: " . $qaNavigationRaw->duration_and_range_of_values->Maximum_Horizontal_Speed->value . "\n";
+    $output =  $output . "\tMinimum Horizontal Speed [" . $qaNavigationRaw->duration_and_range_of_values->Minimum_Horizontal_Speed->uom . "]: " . $qaNavigationRaw->duration_and_range_of_values->Minimum_Horizontal_Speed->value . "\n";
+    $output =  $output . "\tMaximum Horizontal Acceleration [" . $qaNavigationRaw->duration_and_range_of_values->Maximum_Horizontal_Acceleration->uom . "]: " . $qaNavigationRaw->duration_and_range_of_values->Maximum_Horizontal_Acceleration->value . "\n";
+    $output =  $output . "\tMinimum Horizontal Acceleration [" . $qaNavigationRaw->duration_and_range_of_values->Minimum_Horizontal_Acceleration->uom . "]: " . $qaNavigationRaw->duration_and_range_of_values->Minimum_Horizontal_Acceleration->value . "\n";
+    $output =  $output . "\tDistance from Port Start: " . $qaNavigationRaw->duration_and_range_of_values->distanceFromPortStart . "\n";
+    $output =  $output . "\tDistance from Port End: " . $qaNavigationRaw->duration_and_range_of_values->distanceFromPortStart . "\n";
+    $output =  $output . "\tFirst Epoch: " . $qaNavigationRaw->duration_and_range_of_values->First_Epoch . "\n";
+    $output =  $output . "\tLast Epoch: " . $qaNavigationRaw->duration_and_range_of_values->Last_Epoch . "\n";
+    $output =  $output . "\tPossible Number of Epochs with Observations: " . $qaNavigationRaw->duration_and_range_of_values->Possible_Number_of_Epochs_with_Observations . "\n";
+    $output =  $output . "\tActual Number of Epochs with Observations: " . $qaNavigationRaw->duration_and_range_of_values->Actual_Number_of_Epochs_with_Observations . "\n";
+    $output =  $output . "\tActual Countable Number of Epoch with Observations: " . $qaNavigationRaw->duration_and_range_of_values->Actual_Countable_Number_of_Epoch_with_Observations . "\n";
+    $output =  $output . "\tAbsent Number of Epochs with Observations: " . $qaNavigationRaw->duration_and_range_of_values->Absent_Number_of_Epochs_with_Observations . "\n";
+    $output =  $output . "\tFlagged Number of Epochs with Observations: " . $qaNavigationRaw->duration_and_range_of_values->Flagged_Number_of_Epochs_with_Observations . "\n";
+    $output =  $output . "\tMaximum Number of Satellites: " . $qaNavigationRaw->duration_and_range_of_values->Maximum_Number_of_Satellites . "\n";
+    $output =  $output . "\tMinimum Number of Satellites: " . $qaNavigationRaw->duration_and_range_of_values->Minimum_Number_of_Satellites . "\n";
+    $output =  $output . "\tMaximum HDOP: " . $qaNavigationRaw->duration_and_range_of_values->Maximum_HDOP . "\n";
+    $output =  $output . "\tMinimum HDOP: " . $qaNavigationRaw->duration_and_range_of_values->Minimum_HDOP . "\n";
+    $output =  $output . "\n";
+    $output =  $output . "Quality Assessment:\n";
+    $output =  $output . "\tLongest Epoch Gap [" . $qaNavigationRaw->quality_assessment->longest_epoch_gap->uom . "]: " . $qaNavigationRaw->quality_assessment->longest_epoch_gap->value . "\n";
+    $output =  $output . "\tNumber of Gaps Longer than Threshold: " . $qaNavigationRaw->quality_assessment->number_of_gaps_longer_than_threshold . "\n";
+    $output =  $output . "\tNumber of Epochs Out of Sequence: " . $qaNavigationRaw->quality_assessment->number_of_epochs_out_of_sequence . "\n";
+    $output =  $output . "\tNumber of Epochs with Bad GPS Quality Indicator: " . $qaNavigationRaw->quality_assessment->number_of_epochs_with_bad_gps_quality_indicator . "\n";
+    $output =  $output . "\tNumber of Horizontal Speeds Exceeding Threshold: " . $qaNavigationRaw->quality_assessment->number_of_horizontal_speeds_exceeding_threshold . "\n";
+    $output =  $output . "\tNumber of Horizontal Accelerations Exceeding Threshold: " . $qaNavigationRaw->quality_assessment->number_of_horizontal_accelerations_exceeding_threshold . "\n";
+    $output =  $output . "\tPercent Completeness: " . $qaNavigationRaw->quality_assessment->percent_completeness . "\n";
 
+	if ($fqalog != null) {    
+        fwrite($fqalog, $output);
+		fclose($fqalog);
+	} else {
+		echo $output;
+	}
+
+	if ($fqajson != null) {    
+        fwrite($fqajson, json_encode($qaNavigationRaw));
+		fclose($fqajson);
+	}
 
 #var_dump($qaNavigationRaw);
 /**
@@ -161,6 +212,8 @@ function usage()
 	echo "\t\tSpecify the maximum allowable time gap in data in seconds. Default: " . MAX_GAP . "\n\n";
 	echo "\t-l or --logfile <logfile>\n\n";
 	echo "\t\tSpecify a logfile for the qa report.\n\n";
+	echo "\t-j or --jsonfile <jsonfile>\n\n";
+	echo "\t\tSpecify a json file for the qa report.\n\n";
     echo "\t-h or --help\n\n";
     echo "\t\tShow this help message.\n\n";
     echo "\n";

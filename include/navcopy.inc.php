@@ -5911,7 +5911,6 @@ function navcopy($inputFormatSpec, $path, $navfilelist, $outfile)
         break; //end of case "nav27"
 
 
-
     case "uhdas": 
         
         // If GPS not logged separately, only recourse is to grab
