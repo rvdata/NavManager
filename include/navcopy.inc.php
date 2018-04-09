@@ -242,6 +242,11 @@ function navcopy($inputFormatSpec, $path, $navfilelist, $outfile)
 							$gpsBuffer[$binx] = new stdClass();
                             $gpsBuffer[$binx]->gga = new NMEA0183_GGA();
                             $gpsBuffer[$binx]->gga->init($NavRec);
+
+                            if ($dateBufferLast->hhmmss == $gpsBuffer[$binx]->gga->hhmmss) {
+                                unset($gpsBuffer[$binx]);
+                                continue;
+                            }
                             
                             // Process buffer if it is full.
                             if ($binx < $maxBuffer) {
