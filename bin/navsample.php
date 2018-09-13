@@ -3,6 +3,7 @@
 
 define('INCLUDE_PATH', dirname(__FILE__) . '/../include/');
 require INCLUDE_PATH . '/getopts.php';
+require INCLUDE_PATH . '/flags.inc.php';
 require INCLUDE_PATH . '/navsample.inc.php';
 
 
@@ -74,7 +75,7 @@ if ($timeInterval = trim($opts['t'])) {
 if ($opts['c']) {
 	//----- Create abstracted navigation file, suitable for mapping -----//
 
-	$cmd_str = "java -classpath " . INCLUDE_PATH . "/NavControl navsimplifier $navBestRes $navSampled"; 
+	$cmd_str = "java -classpath " . INCLUDE_PATH . "/NavControl navsimplifier $navBestRes $navSampled ".R2R_DELIMITER." ".HEADER; 
 	run_cmd("navsimplifier", $cmd_str);
 
 }

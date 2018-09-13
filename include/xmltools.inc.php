@@ -39,7 +39,7 @@ function xml_write($dataObject, $outfile, $navtemplatefile, $xmlt = null)
     }
     
     // Hack!!!  Have not determined how to pull long name and institution.
-    $person_longname = "Sweeney, Aaron";
+    $person_longname = "Olson, Christopher";
     $person_id = "";
     $person_institution = "Scripps Institution of Oceanography";
     $person_institution_id = "edu.ucsd.sio";

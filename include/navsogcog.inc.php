@@ -13,6 +13,7 @@
  * @link     http://www.rvdata.us
  */
 require_once 'flags.inc.php';
+require_once 'globals.inc.php';
 require_once 'navtools.inc.php';
 date_default_timezone_set('UTC');
 
@@ -116,7 +117,7 @@ function navsogcog($infile, $outfile, $flog = null)
                 if ($epochOK[$inx]) {  // Use only unflagged data.
                     
                     $line = $datagram[$inx];
-                    $dataRec = preg_split('/\t/', $line);
+                    $dataRec = preg_split("/".R2R_DELIMITER."/", $line);
                     
                     $tmpEpochRFC5424 = $dataRec[0];
                     $tmpLon = $dataRec[1];
@@ -215,7 +216,7 @@ function navsogcog($infile, $outfile, $flog = null)
                         
                         // Append SOG and COG to current datagram:
                         $datagram[$i_current] = sprintf(
-                            "%s\t%0.2f\t%0.3f", $datagram[$i_current], $sog, $cog
+                            "%s".R2R_DELIMITER."%0.2f".R2R_DELIMITER."%0.3f", $datagram[$i_current], $sog, $cog
                         );
                         
                         // Copy next position to current position:
@@ -279,7 +280,7 @@ function navsogcog($infile, $outfile, $flog = null)
             if ($epochOK[$inx]) {  // Use only unflagged data.
                 
                 $line = $datagram[$inx];
-                $dataRec = preg_split('/\t/', $line);
+                $dataRec = preg_split("/".R2R_DELIMITER."/", $line);
                 
                 $tmpEpochRFC5424 = $dataRec[0];
                 $tmpLon = $dataRec[1];
@@ -362,7 +363,7 @@ function navsogcog($infile, $outfile, $flog = null)
                     
                     // Append SOG and COG to current datagram:
                     $datagram[$i_current] = sprintf(
-                        "%s\t%0.2f\t%0.3f", $datagram[$i_current], $sog, $cog
+                        "%s".R2R_DELIMITER"%0.2f".R2R_DELIMITER."%0.3f", $datagram[$i_current], $sog, $cog
                     );
                     
                     // Copy next position to current position:
@@ -386,7 +387,7 @@ function navsogcog($infile, $outfile, $flog = null)
         // good position:
         $datagram[$last_known_good_position_in_buffer]
             = sprintf(
-                "%s\t%0.2f\t%0.3f", 
+                "%s".R2R_DELIMITER."%0.2f".R2R_DELIMITER."%0.3f", 
                 $datagram[$last_known_good_position_in_buffer], $sog, $cog
             );
         

@@ -11,6 +11,7 @@
  * @link     http://www.rvdata.us
  */
 require_once 'flags.inc.php';
+require_once 'globals.inc.php';
 require_once 'jsontools.inc.php';
 require_once 'navtools.inc.php';
 date_default_timezone_set('UTC');
@@ -148,8 +149,8 @@ function navqa(
     $portLongitudeEnd, $portLatitudeEnd, $flog = null
 ) {   
     //----- Begin Initialize Variables -----//
-    $maxBuffer = 3600;  // Max number of elements array can hold
-    
+   $maxBuffer = 3600;  // Max number of elements array can hold
+
 	$duration_and_range_of_values = new stdClass();
 	$duration_and_range_of_values->Epoch_Interval = new stdClass();
 	$duration_and_range_of_values->Maximum_Altitude = new stdClass();
@@ -254,7 +255,7 @@ function navqa(
             // Skip flagged data records and header records:
             if ($line[0] != QCFLAG && !strstr($line, HEADER)) {
                 
-                $dataRec = preg_split('/\t/', $line);
+                $dataRec = preg_split("/".R2R_DELIMITER."/", $line);
                 
                 $tmpEpochRFC5424 = $dataRec[0];
                 $tmpLon = $dataRec[1];
@@ -414,7 +415,7 @@ function navqa(
             // Skip flagged data records and header records:
             if ($line[0] != QCFLAG && !strstr($line, HEADER)) {
                 
-                $dataRec = preg_split('/\t/', $line);
+                $dataRec = preg_split("/".R2R_DELIMITER."/", $line);
                 
                 $tmpEpochRFC5424 = $dataRec[0];
                 $tmpLon = $dataRec[1];
@@ -572,7 +573,7 @@ function navqa(
             // Skip flagged data records and header records
             if ($line[0] != QCFLAG && !strstr($line, HEADER)) {	
 
-                $dataRec = preg_split('/\t/', $line);
+                $dataRec = preg_split("/".R2R_DELIMITER."/", $line);
                 
                 $tmpEpochRFC5424 = $dataRec[0];
                 $tmpLon = $dataRec[1];

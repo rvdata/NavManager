@@ -12,6 +12,7 @@
  * @link     http://www.rvdata.us
  */
 require_once 'flags.inc.php';
+require_once 'globals.inc.php';
 require_once 'navtools.inc.php';
 date_default_timezone_set('UTC');
 
@@ -144,7 +145,7 @@ function navqc(
             // Skip flagged data records and header records
             if ($line[0] != QCFLAG && !strstr($line, HEADER)) {
                 
-                $dataRec = preg_split('/\t/', $line);
+                $dataRec = preg_split("/".R2R_DELIMITER."/", $line);
                 
                 $tmpEpochRFC5424 = $dataRec[0];
                 $tmpLon = $dataRec[1];
@@ -762,46 +763,60 @@ function navqc(
                             }
                             if ($epochOK[$inx]) { // Print good epoch w/o flag:
                                 if (isset($alt)) {
-                                    fprintf($fout, "%s\t%s\t%s\t%s\t%s\t%s\t%s\n", 
-                                            $epochRFC5424, 
-                                            sprintf($lonFormat, $lon[$inx]), 
-                                            sprintf($latFormat, $lat[$inx]), 
-                                            $qual[$inx], $nsat[$inx], $hdop[$inx],
-                                            $alt[$inx]);
+                                    fprintf($fout, "%s%s%s%s%s%s%s%s%s%s%s%s%s\n", 
+                                            $epochRFC5424,  R2R_DELIMITER,
+                                            sprintf($lonFormat, $lon[$inx]),  R2R_DELIMITER,
+                                            sprintf($latFormat, $lat[$inx]),  R2R_DELIMITER,
+                                            $qual[$inx], R2R_DELIMITER,
+                                            $nsat[$inx], R2R_DELIMITER,
+                                            $hdop[$inx], R2R_DELIMITER,
+                                            $alt[$inx]
+                                         );
                                 } else {
                                     if (!is_null($qual[$inx])) {
-                                        fprintf($fout, "%s\t%s\t%s\t%s\t%s\t%s\n", 
-                                                $epochRFC5424, 
-                                                sprintf($lonFormat, $lon[$inx]), 
-                                                sprintf($latFormat, $lat[$inx]), 
-                                                $qual[$inx], $nsat[$inx], $hdop[$inx]);		
+                                        fprintf($fout, "%s%s%s%s%s%s%s%s%s%s%s\n", 
+                                                $epochRFC5424,  R2R_DELIMITER,
+                                                sprintf($lonFormat, $lon[$inx]),  R2R_DELIMITER,
+                                                sprintf($latFormat, $lat[$inx]),  R2R_DELIMITER,
+                                                $qual[$inx], R2R_DELIMITER,
+                                                $nsat[$inx], R2R_DELIMITER,
+                                                $hdop[$inx]
+                                             );		
                                     } else {
-                                        fprintf($fout, "%s\t%s\t%s\n", 
-                                                $epochRFC5424, 
-                                                sprintf($lonFormat, $lon[$inx]), 
-                                                sprintf($latFormat, $lat[$inx]));
+                                        fprintf($fout, "%s%s%s%s%s\n", 
+                                                $epochRFC5424,  R2R_DELIMITER,
+                                                sprintf($lonFormat, $lon[$inx]),  R2R_DELIMITER,
+                                                sprintf($latFormat, $lat[$inx])
+                                             );
                                     }
                                 } // if alt set
                             } else { // Flag bad epoch with leading QCFLAG:
                                 if (isset($alt)) {
-                                    fprintf($fout, "%s\t%s\t%s\t%s\t%s\t%s\t%s\n", 
-                                            QCFLAG . $epochRFC5424, 
-                                            sprintf($lonFormat, $lon[$inx]), 
-                                            sprintf($latFormat, $lat[$inx]), 
-                                            $qual[$inx], $nsat[$inx], $hdop[$inx],
-                                            $alt[$inx] );
+                                    fprintf($fout, "%s%s%s%s%s%s%s%s%s%s%s%s%s\n", 
+                                            QCFLAG . $epochRFC5424,  R2R_DELIMITER,
+                                            sprintf($lonFormat, $lon[$inx]),  R2R_DELIMITER,
+                                            sprintf($latFormat, $lat[$inx]),  R2R_DELIMITER,
+                                            $qual[$inx], R2R_DELIMITER,
+                                            $nsat[$inx], R2R_DELIMITER,
+                                            $hdop[$inx], R2R_DELIMITER,
+                                            $alt[$inx]
+                                         );
                                 } else {
                                     if (!is_null($qual[$inx])) {
-                                        fprintf($fout, "%s\t%s\t%s\t%s\t%s\t%s\n", 
-                                                QCFLAG . $epochRFC5424, 
-                                                sprintf($lonFormat, $lon[$inx]), 
-                                                sprintf($latFormat, $lat[$inx]), 
-                                                $qual[$inx], $nsat[$inx], $hdop[$inx]);		
+                                        fprintf($fout, "%s%s%s%s%s%s%s%s%s%s%s\n", 
+                                                QCFLAG . $epochRFC5424,  R2R_DELIMITER,
+                                                sprintf($lonFormat, $lon[$inx]),  R2R_DELIMITER,
+                                                sprintf($latFormat, $lat[$inx]),  R2R_DELIMITER,
+                                                $qual[$inx], R2R_DELIMITER,
+                                                $nsat[$inx], R2R_DELIMITER,
+                                                $hdop[$inx]
+                                             );		
                                     } else {
-                                        fprintf($fout, "%s\t%s\t%s\n", 
-                                                QCFLAG . $epochRFC5424, 
-                                                sprintf($lonFormat, $lon[$inx]), 
-                                                sprintf($latFormat, $lat[$inx]));
+                                        fprintf($fout, "%s%s%s%s%s\n", 
+                                                QCFLAG . $epochRFC5424,  R2R_DELIMITER,
+                                                sprintf($lonFormat, $lon[$inx]),  R2R_DELIMITER,
+                                                sprintf($latFormat, $lat[$inx])
+                                             );
                                     }
                                 } // if alt set
                             } // if epochOK
@@ -1154,46 +1169,60 @@ function navqc(
             }
             if ($epochOK[$inx]) { // Print good epoch w/o flag:
                 if (isset($alt)) {
-                    fprintf($fout, "%s\t%s\t%s\t%s\t%s\t%s\t%s\n", 
-                            $epochRFC5424, 
-                            sprintf($lonFormat, $lon[$inx]), 
-                            sprintf($latFormat, $lat[$inx]), 
-                            $qual[$inx], $nsat[$inx], $hdop[$inx],
-                            $alt[$inx]);
+                    fprintf($fout, "%s%s%s%s%s%s%s%s%s%s%s%s%s\n", 
+                            $epochRFC5424, R2R_DELIMITER,
+                            sprintf($lonFormat, $lon[$inx]), R2R_DELIMITER,
+                            sprintf($latFormat, $lat[$inx]), R2R_DELIMITER,
+                            $qual[$inx], R2R_DELIMITER,
+                            $nsat[$inx], R2R_DELIMITER,
+                            $hdop[$inx], R2R_DELIMITER,
+                            $alt[$inx]
+                         );
                 } else {
                     if (!is_null($qual[$inx])) {
-                        fprintf($fout, "%s\t%s\t%s\t%s\t%s\t%s\n", 
-                                $epochRFC5424, 
-                                sprintf($lonFormat, $lon[$inx]), 
-                                sprintf($latFormat, $lat[$inx]), 
-                                $qual[$inx], $nsat[$inx], $hdop[$inx]);
+                        fprintf($fout, "%s%s%s%s%s%s%s%s%s%s%s\n",
+                                $epochRFC5424, R2R_DELIMITER,
+                                sprintf($lonFormat, $lon[$inx]), R2R_DELIMITER,
+                                sprintf($latFormat, $lat[$inx]), R2R_DELIMITER,
+                                $qual[$inx], R2R_DELIMITER,
+                                $nsat[$inx], R2R_DELIMITER,
+                                $hdop[$inx]
+                             );
                     } else {
-                        fprintf($fout, "%s\t%s\t%s\n", 
-                                $epochRFC5424, 
-                                sprintf($lonFormat, $lon[$inx]), 
-                                sprintf($latFormat, $lat[$inx])); 
+                        fprintf($fout, "%s%s%s%s%s\n", 
+                                $epochRFC5424, R2R_DELIMITER,
+                                sprintf($lonFormat, $lon[$inx]), R2R_DELIMITER,
+                                sprintf($latFormat, $lat[$inx])
+                             ); 
                     }
                 } // if alt set
             } else { // Flag bad epoch with leading QCFLAG:
                 if (isset($alt)) {
-                    fprintf($fout, "%s\t%s\t%s\t%s\t%s\t%s\t%s\n", 
-                            QCFLAG . $epochRFC5424, 
-                            sprintf($lonFormat, $lon[$inx]), 
-                            sprintf($latFormat, $lat[$inx]), 
-                            $qual[$inx], $nsat[$inx], $hdop[$inx],
-                            $alt[$inx]);
+                    fprintf($fout, "%s%s%s%s%s%s%s%s%s%s%s%s%s\n", 
+                            QCFLAG . $epochRFC5424,  R2R_DELIMITER,
+                            sprintf($lonFormat, $lon[$inx]),  R2R_DELIMITER,
+                            sprintf($latFormat, $lat[$inx]),  R2R_DELIMITER,
+                            $qual[$inx], R2R_DELIMITER,
+                            $nsat[$inx], R2R_DELIMITER,
+                            $hdop[$inx], R2R_DELIMITER,
+                            $alt[$inx]
+                         );
                 } else {
                     if (!is_null($qual[$inx])) {
-                        fprintf($fout, "%s\t%s\t%s\t%s\t%s\t%s\n", 
-                                QCFLAG . $epochRFC5424, 
-                                sprintf($lonFormat, $lon[$inx]), 
-                                sprintf($latFormat, $lat[$inx]), 
-                                $qual[$inx], $nsat[$inx], $hdop[$inx]);
+                        fprintf($fout, "%s%s%s%s%s%s%s%s%s%s%s\n", 
+                                QCFLAG . $epochRFC5424,  R2R_DELIMITER,
+                                sprintf($lonFormat, $lon[$inx]),  R2R_DELIMITER,
+                                sprintf($latFormat, $lat[$inx]),  R2R_DELIMITER,
+                                $qual[$inx], R2R_DELIMITER,
+                                $nsat[$inx], R2R_DELIMITER,
+                                $hdop[$inx]
+                             );
                     } else {
-                        fprintf($fout, "%s\t%s\t%s\n", 
-                                QCFLAG . $epochRFC5424, 
-                                sprintf($lonFormat, $lon[$inx]), 
-                                sprintf($latFormat, $lat[$inx]));
+                        fprintf($fout, "%s%s%s%s%s\n", 
+                                QCFLAG . $epochRFC5424,  R2R_DELIMITER,
+                                sprintf($lonFormat, $lon[$inx]),  R2R_DELIMITER,
+                                sprintf($latFormat, $lat[$inx])
+                             );
                     }
                 } // if alt set
             } // end if epochOK

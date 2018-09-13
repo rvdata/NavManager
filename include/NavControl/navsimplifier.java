@@ -19,6 +19,8 @@ public class navsimplifier {
 	public static void main(String[] args) {
 
 		String fileName = args[0];
+      String delimiter = args[2];
+      String header = args[3];
 		
 		//--- read data file
 		Vector<Coordinate> ptsList = new Vector<Coordinate>(10);
@@ -31,8 +33,8 @@ public class navsimplifier {
 			//int i = 0;
 			String line;
 			while( (line=fileIn.readLine()) != null) {
-			    if (!line.startsWith("//")) {  // Skip header records
-				String[] st = line.split("\t");
+			    if (!line.startsWith(header)) {  // Skip header records
+				String[] st = line.split(delimiter);
 				String label = st[0];
 				double lon = Double.parseDouble(st[1]);
 				double lat = Double.parseDouble(st[2]);
@@ -87,7 +89,7 @@ public class navsimplifier {
 
 			String line;
 			for (i = 0; i<ptsSimple.length; i++){
-				line = ptsSimple[i].label+"\t"+Double.toString(ptsSimple[i].x)+"\t"+Double.toString(ptsSimple[i].y)+"\n";
+				line = ptsSimple[i].label+delimiter+Double.toString(ptsSimple[i].x)+delimiter+Double.toString(ptsSimple[i].y)+"\n";
 				outFile.write(line);
 				//System.out.println(ptsSimple[i].x);
 			}

@@ -22,5 +22,6 @@ define('GPS_END_DATE', '2024-12-31T00:00:00Z');
 define('MAX_SPEED', '8.7');
 define('MAX_ACCEL', '1');
 define('MAX_GAP', '300');
+define('R2R_DELIMITER', ',');
 // http://www.postgis.org/documentation/manual-1.4/ch04.html
 ?>

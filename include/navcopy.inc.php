@@ -16,6 +16,7 @@
 date_default_timezone_set('UTC');
 require_once 'flags.inc.php';
 require_once 'nmeatools.inc.php';
+require_once 'globals.inc.php';
 
 //------------ Function Definitions -----------//
 
@@ -69,11 +70,12 @@ function printBuffer($fout, $gpsBuffer, $inx)
     );
     
     fprintf(
-        $fout, "%s\t%s\t%s\t%s\t%s\t%s\t%s\n", $datestamp, 
-        $gpsBuffer[$inx]->gga->lon, $gpsBuffer[$inx]->gga->lat, 
-        $gpsBuffer[$inx]->gga->gpsQuality, 
-        $gpsBuffer[$inx]->gga->numberOfSatellites, 	    
-        $gpsBuffer[$inx]->gga->horizontalDilution,
+        $fout, "%s%s%s%s%s%s%s%s%s%s%s%s%s\n", $datestamp, R2R_DELIMITER,
+        $gpsBuffer[$inx]->gga->lon, R2R_DELIMITER,
+        $gpsBuffer[$inx]->gga->lat, R2R_DELIMITER,
+        $gpsBuffer[$inx]->gga->gpsQuality, R2R_DELIMITER,
+        $gpsBuffer[$inx]->gga->numberOfSatellites, R2R_DELIMITER,
+        $gpsBuffer[$inx]->gga->horizontalDilution, R2R_DELIMITER,
         $gpsBuffer[$inx]->gga->antennaAltitude
     );
     
@@ -109,9 +111,13 @@ function printBufferRMC($fout, $gpsBuffer, $inx)
     $gpsQuality = ($gpsBuffer[$inx]->rmc->status == 'A') ? 1 : 0;
     
     fprintf(
-        $fout, "%s\t%s\t%s\t%s\tNAN\tNAN\tNAN\n", $datestamp, 
-        $gpsBuffer[$inx]->rmc->lon, $gpsBuffer[$inx]->rmc->lat, 
-        $gpsQuality
+       $fout, "%s%s%s%s%s%s%s%sNAN%sNAN%sNAN\n",
+       $datestamp, R2R_DELIMITER,
+       $gpsBuffer[$inx]->rmc->lon, R2R_DELIMITER,
+       $gpsBuffer[$inx]->rmc->lat, R2R_DELIMITER,
+       $gpsQuality, R2R_DELIMITER,
+       R2R_DELIMITER,
+       R2R_DELIMITER
     );
     
 } // end function printBufferRMC()
@@ -138,9 +144,14 @@ function printDatedGGA($fout, $gga)
     );
     
     fprintf(
-        $fout, "%s\t%s\t%s\t%s\t%s\t%s\t%s\n", $datestamp, $gga->lon, $gga->lat, 
-        $gga->gpsQuality, $gga->numberOfSatellites, $gga->horizontalDilution,
-        $gga->antennaAltitude
+       $fout, "%s%s%s%s%s%s%s%s%s%s%s%s%s\n",
+       $datestamp, R2R_DELIMITER,
+       $gga->lon, R2R_DELIMITER,
+       $gga->lat,  R2R_DELIMITER,
+       $gga->gpsQuality, R2R_DELIMITER,
+       $gga->numberOfSatellites, R2R_DELIMITER,
+       $gga->horizontalDilution, R2R_DELIMITER,
+       $gga->antennaAltitude
     );
     
 } // end function printDatedGGA()
@@ -1783,7 +1794,8 @@ function navcopy($inputFormatSpec, $path, $navfilelist, $outfile)
                     $hdop = "NAN";
                     $alt  = "NAN";
                     
-                    $print_format = "%s\t" . $lon_format . "\t" . $lat_format . "\t%s\t%s\t%s\t%s\n";
+                    $print_format = "%s" . R2R_DELIMITER . $lon_format . R2R_DELIMITER . $lat_format;
+                    $print_format .= R2R_DELIMITER."%s".R2R_DELIMITER."%s".R2R_DELIMITER."%s".R2R_DELIMITER."%s\n";
                     
                     // Don't print record if both lat and lon are empty:
                     if ($lat != "NAN" && $lon != "NAN") {
@@ -1867,7 +1879,7 @@ function navcopy($inputFormatSpec, $path, $navfilelist, $outfile)
                 $lat_format = "%." . $lat_nroz . "f";
                 
                 // Format for quality info:
-                $qual_format = "%s\t%s\t%s";
+                $qual_format = "%s".R2R_DELIMITER."%s".R2R_DELIMITER."%s";
                 
                 // This format does not record altitude.  Fill in with "NAN".
                 $alt  = "NAN";
@@ -1877,8 +1889,8 @@ function navcopy($inputFormatSpec, $path, $navfilelist, $outfile)
                     $second, $millisecond
                 );
                 
-                $print_format = "%s\t" . $lon_format . "\t" . $lat_format . "\t" .
-                    $qual_format . "\t%s\n";
+                $print_format = "%s" . R2R_DELIMITER . $lon_format . R2R_DELIMITER . $lat_format . R2R_DELIMITER .
+                    $qual_format . R2R_DELIMITER . "%s\n";
                 
                 fprintf(
                     $fout, $print_format,
@@ -1971,7 +1983,8 @@ function navcopy($inputFormatSpec, $path, $navfilelist, $outfile)
                     $hdop = "NAN";
                     $alt  = "NAN";
                     
-                    $print_format = "%s\t" . $lon_format . "\t" . $lat_format . "\t%s\t%s\t%s\t%s\n";
+                    $print_format = "%s". R2R_DELIMITER . $lon_format . R2R_DELIMITER . $lat_format;
+                    $print_format .= R2R_DELIMITER."%s".R2R_DELIMITER."%s".R2R_DELIMITER."%s".R2R_DELIMITER."%s\n";
                     
                     fprintf(
                         $fout, $print_format,
@@ -2086,7 +2099,8 @@ function navcopy($inputFormatSpec, $path, $navfilelist, $outfile)
                     $hdop = "NAN";
                     $alt  = "NAN";
                     
-                    $print_format = "%s\t" . $lon_format . "\t" . $lat_format . "\t%s\t%s\t%s\t%s\n";
+                    $print_format = "%s" . R2R_DELIMITER . $lon_format . R2R_DELIMITER . $lat_format;
+                    $print_format .= R2R_DELIMITER."%s".R2R_DELIMITER."%s".R2R_DELIMITER."%s".R2R_DELIMITER."%s\n";
                     
                     fprintf( $fout, $print_format,
                              $datestamp, $lon, $lat,
@@ -2971,7 +2985,8 @@ function navcopy($inputFormatSpec, $path, $navfilelist, $outfile)
                     
                     $datestamp = sprintf( $time_format, $year, $month, $day, $hour, $minute, $second );
                     
-                    $print_format = "%s\t" . $lon_format . "\t" . $lat_format . "\t%s\t%s\t%s\t%s\n";
+                    $print_format = "%s" . R2R_DELIMITER . $lon_format . R2R_DELIMITER . $lat_format;
+                    $print_format .= R2R_DELIMITER."%s".R2R_DELIMITER."%s".R2R_DELIMITER."%s".R2R_DELIMITER."%s\n";
                     
                     // This format does not record GGA information.  Fill in with "NAN".
                     $qual = "NAN";
@@ -3102,7 +3117,8 @@ function navcopy($inputFormatSpec, $path, $navfilelist, $outfile)
                     
                     $datestamp = sprintf( $time_format, $year, $month, $day, $hour, $minute, $second );
                     
-                    $print_format = "%s\t" . $lon_format . "\t" . $lat_format . "\t%s\t%s\t%s\t%s\n";
+                    $print_format = "%s" . R2R_DELIMITER . $lon_format . R2R_DELIMITER . $lat_format;
+                    $print_format .= R2R_DELIMITER."%s".R2R_DELIMITER."%s".R2R_DELIMITER."%s".R2R_DELIMITER."%s\n";
                     
                     // This format does not record GGA information.  Fill in with "NAN".
                     $qual = "NAN";
@@ -3444,7 +3460,9 @@ function navcopy($inputFormatSpec, $path, $navfilelist, $outfile)
                     
                     $datestamp = sprintf( $time_format, $year, $month, $day, $hour, $minute, $second );
                     
-                    $print_format = "%s\t" . $lon_format . "\t" . $lat_format . "\t%s\t%s\t%s\t%s\n";
+                    #$print_format = "%s\t" . $lon_format . "\t" . $lat_format . "\t%s\t%s\t%s\t%s\n";
+                    $print_format = "%s" . R2R_DELIMITER . $lon_format . R2R_DELIMITER . $lat_format;
+                    $print_format .= R2R_DELIMITER."%s".R2R_DELIMITER."%s".R2R_DELIMITER."%s".R2R_DELIMITER."%s\n";
                     
                     // This format does not record GGA information.  Fill in with "NAN".
                     $qual = "NAN";
@@ -3857,7 +3875,7 @@ function navcopy($inputFormatSpec, $path, $navfilelist, $outfile)
                             $lat_format = "%." . $lat_nroz . "f";
                             
                             // Format for quality info:
-                            $qual_format = "%s\t%s\t%s";
+                            $qual_format = "%s". R2R_DELIMITER . "%s" . R2R_DELIMITER . "%s";
                             
                             // This format does not record altitude.  Fill in with "NAN".
                             $alt  = "NAN";
@@ -3865,8 +3883,8 @@ function navcopy($inputFormatSpec, $path, $navfilelist, $outfile)
                             $datestamp = sprintf( $time_format, $year, $month, $day, $hour, $minute, 
                                                   $second, $millisecond );
                             
-                            $print_format = "%s\t" . $lon_format . "\t" . $lat_format . "\t" .
-                                $qual_format . "\t%s\n";
+                            $print_format = "%s". R2R_DELIMITER . $lon_format . R2R_DELIMITER . $lat_format . R2R_DELIMITER .
+                                $qual_format . R2R_DELIMITER . "%s\n";
                             
                             fprintf(
                                 $fout, $print_format,
@@ -4443,7 +4461,9 @@ function navcopy($inputFormatSpec, $path, $navfilelist, $outfile)
                     
                     $datestamp = sprintf( $time_format, $year, $month, $day, $hour, $minute, $second );
                     
-                    $print_format = "%s\t" . $lon_format . "\t" . $lat_format . "\t%s\t%s\t%s\t%s\n";
+                    #$print_format = "%s\ttt" . $lon_format . "\t" . $lat_format . "\t%s\t%s\t%s\t%s\n";
+                    $print_format = "%s" . R2R_DELIMITER . $lon_format . R2R_DELIMITER . $lat_format;
+                    $print_format .= R2R_DELIMITER."%s".R2R_DELIMITER."%s".R2R_DELIMITER."%s".R2R_DELIMITER."%s\n";
                     
                     // This format does not record GGA information.  Fill in with "NAN".
                     $qual = "NAN";
@@ -4755,7 +4775,9 @@ function navcopy($inputFormatSpec, $path, $navfilelist, $outfile)
                     
                     $datestamp = sprintf( $time_format, $year, $month, $day, $hour, $minute, $second );
                     
-                    $print_format = "%s\t" . $lon_format . "\t" . $lat_format . "\t%s\t%s\t%s\t%s\n";
+                    #$print_format = "%s\t" . $lon_format . "\t" . $lat_format . "\t%s\t%s\t%s\t%s\n";
+                    $print_format = "%s" . R2R_DELIMITER . $lon_format . R2R_DELIMITER . $lat_format;
+                    $print_format .= R2R_DELIMITER."%s".R2R_DELIMITER."%s".R2R_DELIMITER."%s".R2R_DELIMITER."%s\n";
                     
                     // This format does not record GGA information.  Fill in with "NAN".
                     $qual = "NAN";
@@ -5532,7 +5554,7 @@ function navcopy($inputFormatSpec, $path, $navfilelist, $outfile)
                             $lat_format = "%." . $lat_nroz . "f";
                             
                             // Format for quality info:
-                            $qual_format = "%s\t%s\t%s";
+                            $qual_format = "%s" . R2R_DELIMITER . "%s" . R2R_DELIMITER . "%s";
                             
                             // This format does not record altitude.  Fill in with "NAN".
                             $alt  = "NAN";
@@ -5540,8 +5562,8 @@ function navcopy($inputFormatSpec, $path, $navfilelist, $outfile)
                             $datestamp = sprintf( $time_format, $year, $month, $day, $hour, $min, 
                                                   $sec);
                             
-                            $print_format = "%s\t" . $lon_format . "\t" . $lat_format . "\t" .
-                                $qual_format . "\t%s\n";
+                            $print_format = "%s". R2R_DELIMITER . $lon_format . R2R_DELIMITER . $lat_format . R2R_DELIMITER .
+                                $qual_format . R2R_DELIMITER . "%s\n";
                             
                             fprintf(
                                 $fout, $print_format,
@@ -6718,7 +6740,8 @@ function navcopy($inputFormatSpec, $path, $navfilelist, $outfile)
                         $alt  = "NAN";
                         
                         // Preserve the time, lat, and lon precisions:
-                        $print_format = "%s\t" . $lon_format . "\t" . $lat_format . "\t%s\t%s\t%s\t%s\n";
+                        $print_format = "%s" . R2R_DELIMITER . $lon_format . R2R_DELIMITER . $lat_format;
+                        $print_format .= R2R_DELIMITER."%s".R2R_DELIMITER."%s".R2R_DELIMITER."%s".R2R_DELIMITER."%s\n";
                         
                         fprintf(
                             $fout, $print_format,

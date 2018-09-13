@@ -99,13 +99,13 @@ if ($syntaxErr != "") {
 
 		$headerPattern =  preg_quote(HEADER, '/');
 		$firstLine = firstLine($if, $headerPattern);
-		$dataRecFirst = preg_split('/\t/', $firstLine);
+      $dataRecFirst = preg_split("/".R2R_DELIMITER."/", $firstLine);
 		$dateStringUTCStart = $dataRecFirst[0];
 		$portLongitudeStart = $dataRecFirst[1];
 		$portLatitudeStart = $dataRecFirst[2];
 
 		$lastLine = lastLine($if, PHP_EOL);
-		$dataRecLast = preg_split('/\t/', $lastLine);
+		$dataRecLast = preg_split("/".R2R_DELIMITER."/", $lastLine);
 		$dateStringUTCEnd = $dataRecLast[0];
 		$portLongitudeEnd = $dataRecLast[1];
 		$portLatitudeEnd = $dataRecLast[2];
@@ -134,7 +134,7 @@ if ($debug) {
 
 // END DEBUG stuff
 
-	$qaNavigationRaw = @navqa(
+	$qaNavigationRaw = navqa(
 		$navBestResPreQC, $dateStringUTCStart, $dateStringUTCEnd,
 		$speedHoriMax, $accelHoriMax, $gapThreshold, 
 		$portLongitudeStart, $portLatitudeStart, 

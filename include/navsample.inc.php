@@ -11,6 +11,7 @@
  * @link     http://www.rvdata.us
  */
 require_once 'flags.inc.php';
+require_once 'globals.inc.php';
 date_default_timezone_set('UTC');
 
 /**
@@ -113,7 +114,7 @@ function navsample($infile, $interval, $outfile)
             // Skip flagged data records and header records:
             if ($line[0] != QCFLAG && !strstr($line, HEADER)) {
                 
-                $dataRec = preg_split('/\t/', $line);
+                $dataRec = preg_split("/".R2R_DELIMITER."/", $line);
                 
                 $tmpEpochRFC5424 = $dataRec[0];
                 $tmpLon = $dataRec[1];
@@ -232,17 +233,18 @@ function navsample($infile, $interval, $outfile)
                     }
                     if (isset($sog[$binx]) && isset($cog[$binx])) {
                         fprintf(
-                            $fout, "%s\t%s\t%s\t%s\t%s\n",
-                            $epochRFC5424,
-                            sprintf($lonFormat, $lon[$binx]),
-                            sprintf($latFormat, $lat[$binx]),
-                            $sog[$binx], $cog[$binx]
+                            $fout, "%s%s%s%s%s%s%s%s%s\n",
+                            $epochRFC5424, R2R_DELIMITER,
+                            sprintf($lonFormat, $lon[$binx]), R2R_DELIMITER,
+                            sprintf($latFormat, $lat[$binx]), R2R_DELIMITER,
+                            $sog[$binx], R2R_DELIMITER,
+                            $cog[$binx]
                         );
                     } else {
                         fprintf(
-                            $fout, "%s\t%s\t%s\n",
-                            $epochRFC5424,
-                            sprintf($lonFormat, $lon[$binx]),
+                            $fout, "%s%s%s%s%s\n",
+                            $epochRFC5424, R2R_DELIMITER,
+                            sprintf($lonFormat, $lon[$binx]), R2R_DELIMITER,
                             sprintf($latFormat, $lat[$binx])
                         );
                     }
@@ -284,17 +286,18 @@ function navsample($infile, $interval, $outfile)
                                 }
                                 if (isset($sog[$binx]) && isset($cog[$binx])) {
                                     fprintf(
-                                        $fout, "%s\t%s\t%s\t%s\t%s\n",
-                                        $epochRFC5424,
-                                        sprintf($lonFormat, $lon[$binx]),
-                                        sprintf($latFormat, $lat[$binx]),
-                                        $sog[$binx], $cog[$binx]
+                                        $fout, "%s%s%s%s%s%s%s%s%s\n",
+                                        $epochRFC5424, R2R_DELIMITER,
+                                        sprintf($lonFormat, $lon[$binx]), R2R_DELIMITER,
+                                        sprintf($latFormat, $lat[$binx]), R2R_DELIMITER,
+                                        $sog[$binx], R2R_DELIMITER,
+                                        $cog[$binx]
                                     );
                                 } else {
                                     fprintf(
-                                        $fout, "%s\t%s\t%s\n",
-                                        $epochRFC5424,
-                                        sprintf($lonFormat, $lon[$binx]),
+                                        $fout, "%s%s%s%s%s\n",
+                                        $epochRFC5424, R2R_DELIMITER,
+                                        sprintf($lonFormat, $lon[$binx]), R2R_DELIMITER,
                                         sprintf($latFormat, $lat[$binx])
                                     );
                                 }
@@ -327,17 +330,18 @@ function navsample($infile, $interval, $outfile)
                                 }
                                 if (isset($sog[$binx-1]) && isset($cog[$binx-1])) {
                                     fprintf(
-                                        $fout, "%s\t%s\t%s\t%s\t%s\n",
-                                        $epochRFC5424,
-                                        sprintf($lonFormat, $lon[$binx-1]),
-                                        sprintf($latFormat, $lat[$binx-1]),
-                                        $sog[$binx-1], $cog[$binx-1]
+                                        $fout, "%s%s%s%s%s%s%s%s%s\n",
+                                        $epochRFC5424, R2R_DELIMITER,
+                                        sprintf($lonFormat, $lon[$binx-1]), R2R_DELIMITER,
+                                        sprintf($latFormat, $lat[$binx-1]), R2R_DELIMITER,
+                                        $sog[$binx-1], R2R_DELIMITER,
+                                        $cog[$binx-1]
                                     );
                                 } else {
                                     fprintf(
-                                        $fout, "%s\t%s\t%s\n",
-                                        $epochRFC5424,
-                                        sprintf($lonFormat, $lon[$binx-1]),
+                                        $fout, "%s%s%s%s%s\n",
+                                        $epochRFC5424, R2R_DELIMITER,
+                                        sprintf($lonFormat, $lon[$binx-1]), R2R_DELIMITER,
                                         sprintf($latFormat, $lat[$binx-1])
                                     );
                                 }

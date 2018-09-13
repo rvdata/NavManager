@@ -85,11 +85,11 @@ if ($syntaxErr != "") {
 
 		$headerPattern =  preg_quote(HEADER, '/');
 		$firstLine = firstLine($if, $headerPattern);
-		$dataRecFirst = preg_split('/\t/', $firstLine);
+		$dataRecFirst = preg_split("/".R2R_DELIMITER."/", $firstLine);
 		$dateStringUTCStart = $dataRecFirst[0];
 
 		$lastLine = lastLine($if, PHP_EOL);
-		$dataRecLast = preg_split('/\t/', $lastLine);
+		$dataRecLast = preg_split("/".R2R_DELIMITER."/", $lastLine);
 		$dateStringUTCEnd = $dataRecLast[0];
 
 		fclose($if);
