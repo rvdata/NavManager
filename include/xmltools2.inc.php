@@ -37,6 +37,7 @@ function xml_write2($dataObject, $outfile, $xmlt_file) {
 
     $test = $doc->createElement("r2r:test");
     $test->appendChild($doc->createAttribute("name"))->appendChild($doc->createTextNode("PercentCompleteness"));
+    $test->appendChild($doc->createAttribute("description"))->appendChild($doc->createTextNode("Percent completeness based on continuous data over a determined constant sampling rate."));
     $test->appendChild($doc->createElement("r2r:rating"))->appendChild($doc->createTextNode($rating));
     $test_result = $doc->createElement("r2r:test_result");
     $test_result->appendChild($doc->createAttribute("uom"))->appendChild($doc->createTextNode($uom));
@@ -78,6 +79,7 @@ function xml_write2($dataObject, $outfile, $xmlt_file) {
 
     $test = $doc->createElement("r2r:test");
     $test->appendChild($doc->createAttribute("name"))->appendChild($doc->createTextNode("LongestGapEpoch"));
+    $test->appendChild($doc->createAttribute("description"))->appendChild($doc->createTextNode("Longest time gap between sequential data points."));
     $test->appendChild($doc->createElement("r2r:rating"))->appendChild($doc->createTextNode($rating));
     $test_result = $doc->createElement("r2r:test_result");
     $test_result->appendChild($doc->createAttribute("uom"))->appendChild($doc->createTextNode($uom));
@@ -125,6 +127,7 @@ function xml_write2($dataObject, $outfile, $xmlt_file) {
 
     $test = $doc->createElement("r2r:test");
     $test->appendChild($doc->createAttribute("name"))->appendChild($doc->createTextNode("PercentRecordsOutOfSequence"));
+    $test->appendChild($doc->createAttribute("description"))->appendChild($doc->createTextNode("Percentage of data points with a timestamp before the previous data point."));
     $test->appendChild($doc->createElement("r2r:rating"))->appendChild($doc->createTextNode($rating));
     $test_result = $doc->createElement("r2r:test_result");
     $test_result->appendChild($doc->createAttribute("uom"))->appendChild($doc->createTextNode($uom));
@@ -172,6 +175,7 @@ function xml_write2($dataObject, $outfile, $xmlt_file) {
 
     $test = $doc->createElement("r2r:test");
     $test->appendChild($doc->createAttribute("name"))->appendChild($doc->createTextNode("PercentRecordsWithBadQualityIndicator"));
+    $test->appendChild($doc->createAttribute("description"))->appendChild($doc->createTextNode("Percentage of data points with a bad data quality flag in the original data."));
     $test->appendChild($doc->createElement("r2r:rating"))->appendChild($doc->createTextNode($rating));
     $test_result = $doc->createElement("r2r:test_result");
     $test_result->appendChild($doc->createAttribute("uom"))->appendChild($doc->createTextNode($uom));
@@ -219,6 +223,7 @@ function xml_write2($dataObject, $outfile, $xmlt_file) {
 
     $test = $doc->createElement("r2r:test");
     $test->appendChild($doc->createAttribute("name"))->appendChild($doc->createTextNode("PercentUnreasonableSpeeds"));
+    $test->appendChild($doc->createAttribute("description"))->appendChild($doc->createTextNode("Percentage of points that contribute to calculated speeds that exceed the speed threshold."));
     $test->appendChild($doc->createElement("r2r:rating"))->appendChild($doc->createTextNode($rating));
     $test_result = $doc->createElement("r2r:test_result");
     $test_result->appendChild($doc->createAttribute("uom"))->appendChild($doc->createTextNode($uom));
@@ -267,6 +272,7 @@ function xml_write2($dataObject, $outfile, $xmlt_file) {
 
     $test = $doc->createElement("r2r:test");
     $test->appendChild($doc->createAttribute("name"))->appendChild($doc->createTextNode("PercentUnreasonableAccelerations"));
+    $test->appendChild($doc->createAttribute("description"))->appendChild($doc->createTextNode("Percentage of points that contribute to calculated accelerations that exceed the acceleration threshold."));
     $test->appendChild($doc->createElement("r2r:rating"))->appendChild($doc->createTextNode($rating));
     $test_result = $doc->createElement("r2r:test_result");
     $test_result->appendChild($doc->createAttribute("uom"))->appendChild($doc->createTextNode($uom));
