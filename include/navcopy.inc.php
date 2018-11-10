@@ -6261,10 +6261,15 @@ function navcopy($inputFormatSpec, $path, $navfilelist, $outfile)
         break;
         
     case "siomet":
+
+        $lat_col_num = 0;
+        $lon_col_num = 0;
+        $parameter_count = 0;
+
         // Need to loop over all nav files in a cruise, in the order specified
         // by external control file.
         foreach ($navfilelist as $line) {
-            
+
             // $line = trim( fgets($fin) );
             if ($line == "") break;
             $filename = $path . "/" . $line;
@@ -6289,7 +6294,21 @@ function navcopy($inputFormatSpec, $path, $navfilelist, $outfile)
                         $month = date('m', $dateStr);
                         $day   = date('d', $dateStr); 
                         
-                    } // end if recnum==2
+                    } elseif ($recnum == 4) { // Parameter names in line 4 - find lat and lon
+
+                        $parameters = preg_split("/\s+/", trim($line, "#"));
+
+                        $parameter_count = count($parameters);
+
+                        foreach ($parameters as $index => $parameter) {
+
+                            if ($parameter == 'LA') {
+                                $lat_col_num = $index;
+                            } elseif ($parameter == 'LO') {
+                                $lon_col_num = $index;
+                            }
+                        }
+                    }
                     
                     $recnum++;
                     
@@ -6298,6 +6317,10 @@ function navcopy($inputFormatSpec, $path, $navfilelist, $outfile)
                     if ($line != "") {
                         
                         $MetRec = preg_split("/\s+/", $line);  // whitespace-separated values
+
+                        if (count($MetRec) != $parameter_count) {
+                            continue;
+                        }
                         
                         $hhmmss = trim($MetRec[0]);
                         
@@ -6321,10 +6344,10 @@ function navcopy($inputFormatSpec, $path, $navfilelist, $outfile)
                         }
                         
                         // Decode the latitude and its precision:
-                        $lat = $MetRec[34];
+                        $lat = $MetRec[$lat_col_num];
                         
-                        if (preg_match('/\./', $MetRec[34])) {
-                            $roz = preg_split('/\./', $MetRec[34]);
+                        if (preg_match('/\./', $MetRec[$lat_col_num])) {
+                            $roz = preg_split('/\./', $MetRec[$lat_col_num]);
                             $lat_nroz = strlen($roz[1]);
                         } else {
                             $lat_nroz = 0;
@@ -6332,10 +6355,10 @@ function navcopy($inputFormatSpec, $path, $navfilelist, $outfile)
                         $lat_format = "%." . ($lat_nroz + 2) . "f";
                         
                         // Decode the longitude and its precision:
-                        $lon = $MetRec[35];
+                        $lon = $MetRec[$lon_col_num];
                         
-                        if (preg_match('/\./', $MetRec[35])) {
-                            $roz = preg_split('/\./', $MetRec[35]);
+                        if (preg_match('/\./', $MetRec[$lon_col_num])) {
+                            $roz = preg_split('/\./', $MetRec[$lon_col_num]);
                             $lon_nroz = strlen($roz[1]);
                         } else {
                             $lon_nroz = 0;
