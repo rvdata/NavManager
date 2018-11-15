@@ -131,6 +131,9 @@ function navdatalist(
 	   	    // "nav27": raw NMEA: GLL + ZDA
 	 	    // Vessels: Sproul           
 	 	case "nav27":
+	   	    // "nav29": raw NMEA: GLL + ZDA
+	 	    // Vessels: Sproul, Revelle, Sally Ride, Healy (STARC)
+	 	case "nav29":
             // "nav20": external clock + tags + raw NMEA: GGA + ZDA
             // Vessels: Knorr (2013+)
         case "nav20":
