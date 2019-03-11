@@ -68,8 +68,12 @@ function navbounds($infile)
                 
                 $dataRec = preg_split('/\t/', $line);
                 
-                $lon = $dataRec[1];  // Longitude [-180,180] decimal degrees
-                $lat = $dataRec[2];  // Latitude [-90,90] decimal degrees
+                $lon = (float) $dataRec[1];  // Longitude [-180,180] decimal degrees
+                $lat = (float) $dataRec[2];  // Latitude [-90,90] decimal degrees
+
+                if ($lon === 0.0 && $lat === 0.0) {
+                    continue;
+                }
                 
                 // Decode all fields and update minmax arrays:
                 // Start off with everything in 0-360 range
