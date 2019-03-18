@@ -2659,7 +2659,8 @@ function navcopy($inputFormatSpec, $path, $navfilelist, $outfile)
                 // Added in case ZDA messages were not recorded but external timestamp exists:
                 
                 //echo "No ZDA message detected in file...\n";
-                
+               
+                $lastline = ''; 
                 $fid = fopen($filename, 'r'); 
                 
                 //----------- Loop Over Contents of Single File ----------//
@@ -2675,6 +2676,12 @@ function navcopy($inputFormatSpec, $path, $navfilelist, $outfile)
                         $lines = preg_split('/\$/', $line);
                         // preg_split removes leading '$' from NMEA string.  Put it back:
                         $lines[1] = '$' . $lines[1];
+
+                        // Check for duplicate GGA lines and skip them
+                        if ($lines[1] == $lastline) {
+                            continue;
+                        }    
+                        $lastline = $lines[1];
                         
                         $stringDateTime = preg_split("/\s+/", $lines[0]);
                         $datetimeRec = preg_split("/\:/", $stringDateTime[1]);
