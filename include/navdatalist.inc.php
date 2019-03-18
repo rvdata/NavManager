@@ -1848,58 +1848,79 @@ function navdatalist(
                     } // end while (!feof($fid))
                     
                     //----- Loop Over Contents of Single File to get last nav line -----//
-                    while (!feof($fid)) {
-                        
-                        $line = trim(fgets($fid));
-                        
-                        if (preg_match('/^\}\}/', $line)) {
-                            break;  // Reached end of navigation data.
-                        } else {
-                            
-                            // whitespace-separated values
-                            $NavRec = preg_split("/[\s]+/", $line);
-                            
-                            // values separated by slash "-"
-                            $dateRec = preg_split("/\-/", $NavRec[6]);
-                            // values separated by colon ":"
-                            $timeRec = preg_split("/\:/", $NavRec[7]);
-                            
-                            // Decode the date and time and the time precision:
-                            $year  = $dateRec[0];
-                            $month = $dateRec[1];
-                            $day   = $dateRec[2];
-                            
-                            // External clock time:
-                            $hour   = $timeRec[0];
-                            $minute = $timeRec[1];
-                            $second = trim($timeRec[2], "Z");
-                            
-                            if (preg_match("/\./", $second)) {
-                                $roz = preg_split('/\./', $second);
-                                $tim_nroz = strlen($roz[1]);
-                            } else {
-                                $tim_nroz = 0;
-                            }
-                            
-                            // Print exactly the same precision time stamp
-                            // as in the recorded data.
-                            if ($tim_nroz == 0) {
-                                $time_format = "%4d-%02d-%02dT%02d:%02d:%02dZ";
-                            } else {
-                                $time_format = "%4d-%02d-%02dT%02d:%02d:%0"
-                                    . ($tim_nroz + 3) . "." . $tim_nroz . "fZ";
-                            }
-                            
-                            $dateStringUTCEndFile = sprintf(
-                                $time_format, $year, $month, $day, 
-                                $hour, $minute, $second
-                            );
-                            
-                        } // end if not end of TrackMarks block
-                        
-                    } // end loop over navigation data records
-                    
+
+					// Loop backwards, looking for the last closing bracket
+					// pull the line before the last closing bracket - hopefully the last data line
+
+					$pos = -2;
+					$line = '';
+                    while (-1 !== fseek($fid, $pos, SEEK_END)) {
+						$char = fgetc($fid);
+						if ($char === PHP_EOL) {
+							if (isset($prevll)) {
+								// the closing bracket was found in the previous complete line
+								break;
+							} elseif (preg_match('/^\}\}/', $line)) {
+								// found the closing bracket, signal a break once we have ne next full line
+								$prevll = TRUE;
+								$line = '';
+								$pos--;
+							} else {
+								// not the closing brackets or line immediate before them
+								$line = '';
+								$pos--;
+							}
+						} else {
+							$line = $char.$line;
+							$pos--;
+						}
+					}
+
+
                     fclose($fid);
+					
+
+					// $line should be set with the last nav record	
+					// whitespace-separated values
+					$NavRec = preg_split("/[\s]+/", $line);
+					
+					// values separated by slash "-"
+					$dateRec = preg_split("/\-/", $NavRec[6]);
+					// values separated by colon ":"
+					$timeRec = preg_split("/\:/", $NavRec[7]);
+					
+					// Decode the date and time and the time precision:
+					$year  = $dateRec[0];
+					$month = $dateRec[1];
+					$day   = $dateRec[2];
+					
+					// External clock time:
+					$hour   = $timeRec[0];
+					$minute = $timeRec[1];
+					$second = trim($timeRec[2], "Z");
+					
+					if (preg_match("/\./", $second)) {
+						$roz = preg_split('/\./', $second);
+						$tim_nroz = strlen($roz[1]);
+					} else {
+						$tim_nroz = 0;
+					}
+					
+					// Print exactly the same precision time stamp
+					// as in the recorded data.
+					if ($tim_nroz == 0) {
+						$time_format = "%4d-%02d-%02dT%02d:%02d:%02dZ";
+					} else {
+						$time_format = "%4d-%02d-%02dT%02d:%02d:%0"
+							. ($tim_nroz + 3) . "." . $tim_nroz . "fZ";
+					}
+					
+					$dateStringUTCEndFile = sprintf(
+						$time_format, $year, $month, $day, 
+						$hour, $minute, $second
+					);
+
+
                     
                     // Check that the start/end date/times in each file overlap the 
                     // start/end date/times entered on the command line:

@@ -3369,9 +3369,11 @@ function navcopy($inputFormatSpec, $path, $navfilelist, $outfile)
                 
                 $line = trim(fgets($fid));
                 
-                if (preg_match('/^\}\}/', $line)) {
-                    break;  // Reached end of navigation data.
-                } else {
+                #if (preg_match('/^\}\}/', $line)) {
+                #    break;  // Reached end of navigation data.
+                #} else {
+				// Look for all matching records, not just ones between the first set of brackets
+				if (preg_match('/\d{2}\s\d*(?:\.\d+)?\sN\s\d{3}\s\d*(?:\.\d+)?\sW\s\d\d\d\d-\d\d-\d\d\s\d\d:\d\d:\d\dZ/', $line)) {
                     
                     $NavRec = preg_split("/[\s]+/", $line);  // whitespace-separated values
                     
