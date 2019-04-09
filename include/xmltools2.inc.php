@@ -1,6 +1,6 @@
 <?php
 
-function xml_write2($dataObject, $outfile, $xmlt_file) {
+function xml_write2($dataObject, $outfile, $xmlt_file = NULL) {
 
     $test_counts = 0;
     $tests_green = 0;
@@ -10,10 +10,21 @@ function xml_write2($dataObject, $outfile, $xmlt_file) {
     $doc = new DOMDocument("1.0", "utf-8");
     $doc->preserveWhiteSpace = FALSE;
     $doc->formatOutput = TRUE;
-    $doc->load($xmlt_file);
+
+    if ($xmlt_file != NULL) {
+       $doc->load($xmlt_file);
+       $certificate = $xpath->query("//r2r:certificate")->item(0);
+       $rating_element = $xpath->query("//r2r:certificate/r2r:rating")->item(0);
+       $filesetinfo_supplementals = $xpath->query("//r2r:filesetinfo_supplementals")->item(0);
+    } else {
+       $certificate = $doc->createElement("r2r:certificate");
+       $doc->appendChild($certificate);
+       $rating_element = $certificate->appendChild($doc->createElement("r2r:rating"));
+       $filesetinfo_supplementals = $doc->createElement("r2r:filesetinfo_supplementals");
+    }
+
     $xpath = new DOMXPath($doc);
 
-    $certificate = $xpath->query("//r2r:certificate")->item(0);
     $tests = $doc->createElement("r2r:tests");
 
     // percent_completeness
@@ -297,7 +308,6 @@ function xml_write2($dataObject, $outfile, $xmlt_file) {
         $rating_full = 'Y';
     }
 
-    $rating_element = $xpath->query("//r2r:certificate/r2r:rating")->item(0);
     $rating_element->setAttribute("description", "GREEN (G) if all tests GREEN, RED (R) if at least  one test RED, else YELLOW (Y)");
     $rating_element->nodeValue = $rating_full;
     $test_infos = $doc->createElement('r2r:infos');
@@ -332,8 +342,6 @@ function xml_write2($dataObject, $outfile, $xmlt_file) {
     // Now write the tests to the certificate
     $certificate->appendChild($tests);
 
-    // Get the filesetinfo_supplementals block to add additional info
-    $filesetinfo_supplementals = $xpath->query("//r2r:filesetinfo_supplementals")->item(0);
 
     // Time
 

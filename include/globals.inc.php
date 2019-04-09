@@ -1,4 +1,3 @@
-#!/usr/bin/env php 
 <?php 
 /**
  * Set globals for NavManager
