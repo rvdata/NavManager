@@ -11,7 +11,6 @@
  * @link     http://www.rvdata.us
  */
 require_once 'flags.inc.php';
-require_once 'jsontools.inc.php';
 require_once 'navtools.inc.php';
 date_default_timezone_set('UTC');
 
