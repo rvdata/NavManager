@@ -13,6 +13,7 @@ function xml_write2($dataObject, $outfile, $xmlt_file = NULL) {
 
     if ($xmlt_file != NULL) {
        $doc->load($xmlt_file);
+       $xpath = new DOMXPath($doc);
        $certificate = $xpath->query("//r2r:certificate")->item(0);
        $rating_element = $xpath->query("//r2r:certificate/r2r:rating")->item(0);
        $filesetinfo_supplementals = $xpath->query("//r2r:filesetinfo_supplementals")->item(0);
