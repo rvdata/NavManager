@@ -19,8 +19,17 @@ public class navsimplifier {
 	public static void main(String[] args) {
 
 		String fileName = args[0];
-      String delimiter = args[2];
-      String header = args[3];
+		String delimiter = args[2];
+		String header = args[3];
+        boolean skipLabels = true;
+        int lat_index = 2;
+        int lon_index = 1;
+
+        if (args.length > 4) {
+            skipLabels = Boolean.valueOf(args[4]);
+            lat_index = Integer.valueOf(args[5]);
+            lon_index = Integer.valueOf(args[6]);
+        }
 		
 		//--- read data file
 		Vector<Coordinate> ptsList = new Vector<Coordinate>(10);
@@ -34,10 +43,18 @@ public class navsimplifier {
 			String line;
 			while( (line=fileIn.readLine()) != null) {
 			    if (!line.startsWith(header)) {  // Skip header records
+                    if (skipLabels == true) { // Skip the label column if we haven't yet
+                        skipLabels = false;
+                        continue;
+                    } 
 				String[] st = line.split(delimiter);
+				if (st.length < 3) {
+				    System.out.println("Error: please check your delimiter");
+				    //System.exit(0);
+				}
 				String label = st[0];
-				double lon = Double.parseDouble(st[1]);
-				double lat = Double.parseDouble(st[2]);
+				double lon = Double.parseDouble(st[lon_index]);
+				double lat = Double.parseDouble(st[lat_index]);
 				if (lon > 180) {
 				    lon = lon - 360.0;
 				};
@@ -74,19 +91,6 @@ public class navsimplifier {
 			BufferedWriter outFile = new BufferedWriter(
 					new FileWriter(new File(outFileName)));
 		
-			// write header for ArcGIS import
-			//outFile.write("lon,lat\n");
-			
-			// Write R2R NavControl header:
-			outFile.write("// Datetime [UTC], Longitude [deg], Latitude [deg]\n");
-			outFile.write("// More detailed information may be found here: " 
-				      + "http://get.rvdata.us/format/100002/format-r2rnav.txt\n");
-			// Get current UTC datetime and write in RFC5424 format:
-			SimpleDateFormat formatUTC = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
-			formatUTC.setTimeZone(TimeZone.getTimeZone("UTC"));
-			Date date = new Date();
-			outFile.write("// Creation date: " + formatUTC.format(date) + "Z\n");
-
 			String line;
 			for (i = 0; i<ptsSimple.length; i++){
 				line = ptsSimple[i].label+delimiter+Double.toString(ptsSimple[i].x)+delimiter+Double.toString(ptsSimple[i].y)+"\n";

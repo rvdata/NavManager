@@ -21,5 +21,5 @@ define("QCFLAG", "#");
  * Header of navigation standard products is marked with a leading
  * double-slash ('//').
  */
-define("HEADER", "//");
+define("HEADER", "#");
 ?>
