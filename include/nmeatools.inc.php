@@ -209,7 +209,8 @@ class NMEA0183_UNIXD
         // Convert decimal day least count to decimal seconds:
         $sec_prec = pow(10, -1*$dday_nroz) * 24.0 * 3600.0; 
         // Calculate the number of digits to keep to the right of the decimal point:
-        $this->tim_nroz = get_least_count($sec_prec);   // nroz for decimal seconds
+        #$this->tim_nroz = get_least_count($sec_prec);   // nroz for decimal seconds
+        $this->tim_nroz = getLeastCount($sec_prec);   // nroz for decimal seconds
         
         //    echo $dday_nroz, " ", $sec_prec, " ", $this->tim_nroz, "\n";
         
@@ -775,7 +776,6 @@ class DateTimeSimple
         $zda = new NMEA0183_ZDA();
         $unixd = new NMEA0183_UNIXD();
         $rmc = new NMEA0183_RMC();
-        
         while (!feof($filePointer)) {
             
             $line = trim(fgets($filePointer));
@@ -800,8 +800,7 @@ class DateTimeSimple
 				if ($zda->year != "" && $zda->month != ""&& $zda->day != "" && $zda->hh != "0" && $zda->mm != "0" && $zda->ss != "0" || $zda->year != "1999" && $zda->month != "11" && $zda->day != "30") {
 					break;
 				}
-            } else {
-                if (preg_match('/^\$UNIXD$/', $NavRec[0])) {
+            } elseif (preg_match('/^\$UNIXD$/', $NavRec[0])) {
                     $unixd->init($baseyear, $NavRec);
                     $this->year  = $unixd->year;
                     $this->month = $unixd->month;
@@ -812,8 +811,7 @@ class DateTimeSimple
 					if ($zda->year != "" && $zda->month != ""&& $zda->day != "" && $zda->hh != "0" && $zda->mm != "0" && $zda->ss != "0" || $zda->year != "1999" && $zda->month != "11" && $zda->day != "30") {
 						break;
 					}
-                } else {
-                    if (preg_match('/^\$.{2}RMC$/', $NavRec[0])) {
+                } elseif (preg_match('/^\$.{2}RMC$/', $NavRec[0])) {
                         $rmc->init($NavRec);
                         $this->year  = $rmc->year;
                         $this->month = $rmc->month;
@@ -829,8 +827,6 @@ class DateTimeSimple
 						if ($zda->year != "" && $zda->month != ""&& $zda->day != "" && $zda->hh != "0" && $zda->mm != "0" && $zda->ss != "0" || $zda->year != "1999" && $zda->month != "11" && $zda->day != "30") {
 							break;
 						}
-                    } // end if RMC
-                } // end if UNIXD
             } // end if ZDA
             
         } // end while (!feof($fid))

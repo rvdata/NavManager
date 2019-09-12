@@ -6268,6 +6268,7 @@ function navcopy($inputFormatSpec, $path, $navfilelist, $outfile)
         //----------- Initialize variables: -----------//
         $maxBuffer = 86400;  // Max number of elements array can hold
         $gpsBuffer = array(); 
+        $dateBufferLast = new stdClass();
         
         $nmea = new NMEA0183Message();
         $unixd = new NMEA0183_UNIXD();
@@ -6285,9 +6286,10 @@ function navcopy($inputFormatSpec, $path, $navfilelist, $outfile)
             
             //      $line = trim( fgets($fin) );
             if ($line == "") break;
-            $lineRec = preg_split("/[\s]+/", $line);
-            $filename = $path . "/" . $lineRec[0];
-            $baseyear = $lineRec[1];  // baseyear for use with  UNIXD decimal days
+            $lineRec = preg_split("/_/", $line);
+            $filename = $path . "/" . $line;
+            preg_match_all('/[0-9]{4}/', $lineRec[0], $matches);
+            $baseyear = $matches[0][0];  // baseyear for use with  UNIXD decimal days
             //     echo "Reading " . $filename . "\n";
             $fid = fopen($filename, 'r');
             
@@ -6335,6 +6337,7 @@ function navcopy($inputFormatSpec, $path, $navfilelist, $outfile)
                             
                             // Save GPS fix to buffer:
                             //$gpsBuffer[$binx]->gga = clone $gga;
+                            $gpsBuffer[$binx] = new stdClass();
                             $gpsBuffer[$binx]->gga = new NMEA0183_GGA();
                             $gpsBuffer[$binx]->gga->init($NavRec);
                             
