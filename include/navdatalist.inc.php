@@ -2611,74 +2611,81 @@ function navdatalist(
             // times.
             $inx = 0;
             while (false !== ($file = readdir($handle))) {
-                
+
                 if ($file != "." && $file != "..") {
-                    
+
                     $filename = $file;
-                    $cmd_str_unixd = "( head $path/$filename | grep \"UNIXD\" |"
-                        . " head -1 ) 2> /dev/null";
-                    exec($cmd_str_unixd, $result, $ret_status);
+                    $lineRec = preg_split("/_/", $filename);
+                    preg_match_all('/[0-9]{4}/', $lineRec[0], $matches);
+                    $baseyear = $matches[0][0];  // baseyear for use with  UNIXD decimal days
+                    $julian_day = $lineRec[1];
+
+                    $date =  doy2mmdd($baseyear, $julian_day);
+                    $month = $date[0];
+                    $day = $date[1];
+                    $table[$inx]["start"] = $dateStringUTCStartFile;
+                    $table[$inx]["file"]  = $filename;
+                    $inx++;
+
+                    // Ged the start and end times from GGA
+                    // See if start time is after and end time is before, otherwise put into other parseable
+                    $fid = fopen($file, 'r');
+                    if (has_GGA($fid) {
+                        while ($line = fgets($fid) !== FALSE) {
+
+                        }
+                    } else {
+                        die('No GGA found');
+                    }
+                        
+                    if (preg_match("/\./", $second)) {
+                        $roz = preg_split('/\./', $second);
+                        $tim_nroz = strlen($roz[1]);
+                    } else {
+                        $tim_nroz = 0;
+                    }
                     
-                    if ($result[0]) {
-                        
-                        //	echo "$filename: $result[0]\n";
-                        unset($result);
-                        
-                        // Get first and last date/time strings in each file:
-                        $cmd_str1 = "( head $path/$filename | grep \"UNIXD\" |"
-                            . " head -1 | awk -F , '{print $2}' ) 2> /dev/null";
-                        exec($cmd_str1, $output, $ret_status);
-                        $dateStringUTCStartFile = $output[0];
-                        unset($output);
-                        $cmd_str2 = "tail $path/$filename | grep \"UNIXD\" |"
-                            . " tail -1 | awk -F , '{print $2}'";
-                        exec($cmd_str2, $output, $ret_status);
-                        $dateStringUTCEndFile = $output[0];
-                        unset($output);
-                        
-                        //	echo "$filename: $dateStringUTCStartFile "
-                        //     . "$dateStringUTCEndFile\n";
-                        
-                        // Check that the start/end date/times in each file overlap
-                        // the start/end date/times entered on the command line:
-                        //if (!( ($dateStringUTCEndFile < $dateNumberUTCStart ) || 
-                        //	 ($dateStringUTCStartFile > $dateNumberUTCEnd ) ) ) {
-                        
-                        $table[$inx]["start"] = $dateStringUTCStartFile;
-                        $table[$inx]["file"]  = $filename;
-                        $inx++;
-                        
-                        // } // end if within bounds
-                        
-                    } // end if UNIXD message found
+                    // Print exactly the same precision time stamp 
+                    // as in the recorded data.
+                    if ($tim_nroz == 0) {
+                        $time_format = "%4d-%02d-%02dT%02d:%02d:%02dZ";
+                    } else {
+                        $time_format = "%4d-%02d-%02dT%02d:%02d:%0" 
+                            . ($tim_nroz + 3) . "." . $tim_nroz . "fZ";
+                    }
                     
+                    $dateStringUTCStartFile = sprintf(
+                        $time_format, $year, $month, $day, 
+                        $hour, $minute, $second
+                    );
+
                 } // if file is not "." nor ".."
-                
+
             } // end loop over files in dir
-            
+
             // If table exists, sort in ascending order from earliest to 
             // latest start date/time:
             if ($table) {
                 sort($table);
-                
+
                 $tmp = preg_split("/-/", $dateStringUTCStart);
                 $baseyear = $tmp[0];
-                
+
                 $inxMax = count($table);
                 for ($inx=0; $inx<$inxMax; $inx++) {
                     // Push filename onto array.
                     $navfilelist[] = $table[$inx]["file"];
                 } // end loop over files in table
-                
+
             } else {
-                
+
                 echo "navdatalist(): No files contain UNIXD decimal day strings "
-                    . "between $dateStringUTCStart and $dateStringUTCEnd.\n";
+                . "between $dateStringUTCStart and $dateStringUTCEnd.\n";
                 exit(1);
-                
+
             } // end if $table
             break;
-            
+
             // "siomet": DAS: SIO MET data acquisition system
             // Vessels: Roger Revelle, Melville
         case "siomet":

@@ -6290,16 +6290,18 @@ function navcopy($inputFormatSpec, $path, $navfilelist, $outfile)
             $filename = $path . "/" . $line;
             preg_match_all('/[0-9]{4}/', $lineRec[0], $matches);
             $baseyear = $matches[0][0];  // baseyear for use with  UNIXD decimal days
-            //     echo "Reading " . $filename . "\n";
+            $julian_day = $lineRec[1];
+                 echo "Reading " . $filename . "\n";
+continue;
             $fid = fopen($filename, 'r');
             
             //----------- Get Date ----------//
-            $datetimeLastKnown->init($fid, $baseyear);
-            if (is_null($datetimeLastKnown)) {
-                echo "No ZDA nor UNIXD date stamp in file.\n";
-                exit(1);
-            }
-            rewind($fid);
+#            $datetimeLastKnown->init($fid, $baseyear);
+#            if (is_null($datetimeLastKnown)) {
+#                echo "No ZDA nor UNIXD date stamp in file.\n";
+#                exit(1);
+#            }
+#            rewind($fid);
             //------------ End Get Date -----------//
             
             //----------- Loop Over Contents of Single File ----------//
