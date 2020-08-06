@@ -1,0 +1,27 @@
+"nav24": raw NMEA: GGA + ZDA
+Vessels: Sikuliaq
+
+Example:
+
+# Platform:
+#   Name: R/V Sikuliaq
+#   Operator: UAF
+#   IMO Number: 9578945
+#   ICES Code: 33BI
+#   Call Sign: WDG7520
+#   MMSI Number: 338417000
+# Cruise ID: SKQ201822S
+ins_seapath_position	2018-11-28T02:03:53.1570Z	$PSXN,20,0,0,0,0*3B
+ins_seapath_position	2018-11-28T02:03:53.1960Z	$PSXN,23,-0.38,0.28,350.97,-0.00*31
+ins_seapath_position	2018-11-28T02:03:53.7248Z	$GPZDA,020353.69,28,11,2018,,*6F
+ins_seapath_position	2018-11-28T02:03:53.8110Z	$GPGGA,020353.69,6007.115740,N,14925.627470,W,2,12,1.3,9.04,M,10.04,M,1.4,0001*5A
+ins_seapath_position	2018-11-28T02:03:53.8679Z	$GPGLL,6007.115740,N,14925.627470,W,020353.69,A,D*7A
+ins_seapath_position	2018-11-28T02:03:53.9095Z	$GPVTG,4.73,T,348.79,M,0.0,N,0.0,K,D*27
+ins_seapath_position	2018-11-28T02:03:53.9901Z	$GPRMC,020353.69,A,6007.115740,N,14925.627470,W,0.0,4.73,281118,15.9,E,D*28
+ins_seapath_position	2018-11-28T02:03:54.0512Z	$GPGST,020353.69,0.45,0.260,0.208,5,0.259,0.208,0.585*77
+ins_seapath_position	2018-11-28T02:03:54.1095Z	$GPGBS,020353.69,-0.08,-0.05,0.15,30,0.00,-0.12,0.91*4B
+ins_seapath_position	2018-11-28T02:03:54.1302Z	$GPHDT,350.98,T*02
+...
+
+
+

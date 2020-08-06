@@ -1,0 +1,2 @@
+"nav25": seapath stamp, time stamp, nmea ZDA + GGA + VTG
+Vessels: Healy

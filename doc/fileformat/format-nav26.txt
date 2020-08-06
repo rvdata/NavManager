@@ -1,0 +1,2 @@
+Parser for general csvs, just have to point to the correct columns
+This was made to parse .elg files from Endeavor cruises where the nav went missing
