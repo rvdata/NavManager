@@ -1,0 +1,7 @@
+UNIXD - UNIX (POSIX) Time
+
+Example Record: $UNIXD,194.2811015,9.6872383
+
+where:
+    194.2811015 Decimal year
+    9.6872383   Decimal days since boot

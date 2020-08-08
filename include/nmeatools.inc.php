@@ -209,7 +209,8 @@ class NMEA0183_UNIXD
         // Convert decimal day least count to decimal seconds:
         $sec_prec = pow(10, -1*$dday_nroz) * 24.0 * 3600.0; 
         // Calculate the number of digits to keep to the right of the decimal point:
-        $this->tim_nroz = get_least_count($sec_prec);   // nroz for decimal seconds
+        #$this->tim_nroz = get_least_count($sec_prec);   // nroz for decimal seconds
+        $this->tim_nroz = getLeastCount($sec_prec);   // nroz for decimal seconds
         
         //    echo $dday_nroz, " ", $sec_prec, " ", $this->tim_nroz, "\n";
         
@@ -279,6 +280,121 @@ class NMEA0183_UNIXD
         
     }
 } // end class NMEA0183_UNIXD
+
+/**
+ * UHDAS "PYRTM" Message
+ */
+class UHDAS_PYRTM
+{
+    // PYRTM is the same as UNIXD except with the year added as the first field
+    // The UNIXD decimal day begins with UTC January 1 = Day 0.  (For example,
+    // UTC Jan 1, 12:00:00 = decimay day 0.5).  If a cruise continues beyond the 
+    // end of the year, the day will be larger than 365.  Conversion of the 
+    // decimal day to day-of-month will depend on whether or not it comes during 
+    // a leap year. The year is not recorded in this format and must come from 
+    // an external source.
+    
+    // Note: The $UNIXD message is NOT reported by the GPS receiver; it is
+    // reported by the PC clock on the machine running UHDAS.
+    
+    public $decimal_day, $tim_nroz, $hhmmss;
+    public $year, $month, $day;
+    public $time_stamp;
+    
+    /**
+     * Get class properties from UNIXD message array
+     *
+     * @param int   $baseyear 4-digit baseyear
+     * @param array $NavArray UNIXD message array
+     */
+    public function init($NavArray) 
+    {
+        $baseyear = $NavArray[1];
+        $this->decimal_day = floatval($NavArray[2]);
+        
+        if (preg_match('/\./', $NavArray[2])) {
+            $roz = preg_split('/\./', $NavArray[2]);
+            $dday_nroz = strlen($roz[1]);  // nroz for decimal day
+        } else {
+            $dday_nroz = 0;
+        }
+        // Convert decimal day least count to decimal seconds:
+        $sec_prec = pow(10, -1*$dday_nroz) * 24.0 * 3600.0; 
+        // Calculate the number of digits to keep to the right of the decimal point:
+        #$this->tim_nroz = get_least_count($sec_prec);   // nroz for decimal seconds
+        $this->tim_nroz = getLeastCount($sec_prec);   // nroz for decimal seconds
+        
+        //    echo $dday_nroz, " ", $sec_prec, " ", $this->tim_nroz, "\n";
+        
+        $doy = intval($this->decimal_day);
+        
+        $decimal_hh = ($this->decimal_day - $doy) * 24.0; // 24 hr/day
+        $hh = floor($decimal_hh);  // integer hours
+        $decimal_mm = ($decimal_hh - $hh) * 60.0; // 60 min/hr
+        $mm = floor($decimal_mm);  // integer minutes
+        $decimal_ss = ($decimal_mm - $mm) * 60.0; // 60 sec/min 
+        $ss = $decimal_ss;         // decimal seconds
+        
+        if ($this->tim_nroz == 0) {
+            $time_format = "%02d%02d%02d";
+        } else {
+            $time_format = "%02d%02d%0" . ($this->tim_nroz + 3)
+                . "." . $this->tim_nroz . "f";
+        }
+        $this->hhmmss = sprintf($time_format, $hh, $mm, $ss);
+        
+        // Print exactly the same precision time stamp as in the recorded data.
+        if ($this->tim_nroz == 0) {
+            $time_format = "%02d:%02d:%02d";
+        } else {
+            $time_format = "%02d:%02d:%0" . ($this->tim_nroz + 3)
+                . "." . $this->tim_nroz . "f";
+        }
+        //    $hhmmss = sprintf($time_format, $hh, $mm, $ss);
+        
+        // Cumulative number of days:
+        $monthsLeap   = array(0, 31, 60, 91, 121, 152, 182,
+                              213, 244, 274, 305, 335, 366);
+        $monthsNormal = array(0, 31, 59, 90, 120, 151, 181,
+                              212, 243, 273, 304, 334, 365);
+        
+        // Convert decimal day to month and day-of-month.  If decimal day > 364, 
+        // increment baseyear.
+        $guess = intval($doy*0.032);  // 1/(31 days) = min possible month number
+        $more = 0;
+        if ($baseyear%4 == 0) {    // Works till year 2100
+            if (($doy+1 - $monthsLeap[$guess + 1]) > 0) $more = 1;
+            $month = $guess + $more + 1;
+            $day = $doy+1 - $monthsLeap[$guess + $more];
+        } else {
+            if (($doy+1 - $monthsNormal[$guess + 1]) > 0) $more = 1;
+            $month = $guess + $more + 1;
+            $day = $doy+1 - $monthsNormal[$guess + $more];
+        }
+        
+        $this->day   = $day;
+        $this->month = $month;
+        $this->year  = $baseyear;
+        $this->hh = $hh;
+        $this->mm = $mm;
+        $this->ss = $ss;
+        
+        //    echo $baseyear, "-", $month, "-", $day, " doy=", $doy, "\n";
+        
+        $hhmmss = sprintf($time_format, $hh, $mm, $ss);
+        
+        // Note: Time in UNIXD message is UTC time.
+        $iso8601_time = sprintf(
+            "%4d-%02d-%02dT%sZ", 
+            $this->year, $this->month, $this->day, $hhmmss
+        );
+        
+        $this->time_stamp = $iso8601_time;
+        
+        //    echo $this->time_stamp,"\n";
+        
+    }
+} // end class UHDAS_PYRTM
 
 
 /**
@@ -774,8 +890,8 @@ class DateTimeSimple
         $nmea = new NMEA0183Message();
         $zda = new NMEA0183_ZDA();
         $unixd = new NMEA0183_UNIXD();
+        $pyrtm = new UHDAS_PYRTM();
         $rmc = new NMEA0183_RMC();
-        
         while (!feof($filePointer)) {
             
             $line = trim(fgets($filePointer));
@@ -792,45 +908,52 @@ class DateTimeSimple
                 $this->hh    = $zda->hh;
                 $this->mm    = $zda->mm;
                 $this->ss    = $zda->ss;
-                //	$date_format = "%4d-%02d-%02dT%02d:%02d:%02dZ";
-                //	echo "zda: ", sprintf(
+                //    $date_format = "%4d-%02d-%02dT%02d:%02d:%02dZ";
+                //    echo "zda: ", sprintf(
                 //      $date_format, $zda->year, $zda->month, $zda->day,
                 //      $zda->hh, $zda->mm, $zda->ss
                 //  ), "\n";
-				if ($zda->year != "" && $zda->month != ""&& $zda->day != "" && $zda->hh != "0" && $zda->mm != "0" && $zda->ss != "0" || $zda->year != "1999" && $zda->month != "11" && $zda->day != "30") {
-					break;
-				}
-            } else {
-                if (preg_match('/^\$UNIXD$/', $NavRec[0])) {
-                    $unixd->init($baseyear, $NavRec);
-                    $this->year  = $unixd->year;
-                    $this->month = $unixd->month;
-                    $this->day   = $unixd->day;
-                    $this->hh    = $unixd->hh;
-                    $this->mm    = $unixd->mm;
-                    $this->ss    = $unixd->ss;
-					if ($zda->year != "" && $zda->month != ""&& $zda->day != "" && $zda->hh != "0" && $zda->mm != "0" && $zda->ss != "0" || $zda->year != "1999" && $zda->month != "11" && $zda->day != "30") {
-						break;
-					}
-                } else {
-                    if (preg_match('/^\$.{2}RMC$/', $NavRec[0])) {
-                        $rmc->init($NavRec);
-                        $this->year  = $rmc->year;
-                        $this->month = $rmc->month;
-                        $this->day   = $rmc->day;
-                        $this->hh    = $rmc->hh;
-                        $this->mm    = $rmc->mm;
-                        $this->ss    = $rmc->ss;
-                        // $date_format = "%4d-%02d-%02dT%02d:%02d:%02dZ";
-                        // echo "rmc: ", sprintf(
-                        //     $date_format, $rmc->year, $rmc->month, $rmc->day, 
-                        //     $rmc->hh, $rmc->mm, $rmc->ss
-                        // ),"\n";   
-						if ($zda->year != "" && $zda->month != ""&& $zda->day != "" && $zda->hh != "0" && $zda->mm != "0" && $zda->ss != "0" || $zda->year != "1999" && $zda->month != "11" && $zda->day != "30") {
-							break;
-						}
-                    } // end if RMC
-                } // end if UNIXD
+                if ($zda->year != "" && $zda->month != ""&& $zda->day != "" && $zda->hh != "0" && $zda->mm != "0" && $zda->ss != "0" || $zda->year != "1999" && $zda->month != "11" && $zda->day != "30") {
+                    break;
+                }
+            } elseif (preg_match('/^\$UNIXD$/', $NavRec[0])) {
+                $unixd->init($baseyear, $NavRec);
+                $this->year  = $unixd->year;
+                $this->month = $unixd->month;
+                $this->day   = $unixd->day;
+                $this->hh    = $unixd->hh;
+                $this->mm    = $unixd->mm;
+                $this->ss    = $unixd->ss;
+                if ($zda->year != "" && $zda->month != ""&& $zda->day != "" && $zda->hh != "0" && $zda->mm != "0" && $zda->ss != "0" || $zda->year != "1999" && $zda->month != "11" && $zda->day != "30") {
+                    break;
+                }
+            } elseif (preg_match('/^\$PYRTM$/', $NavRec[0])) {
+                $pyrtm->init($NavRec);
+                $this->year  = $pyrtm->year;
+                $this->month = $pyrtm->month;
+                $this->day   = $pyrtm->day;
+                $this->hh    = $pyrtm->hh;
+                $this->mm    = $pyrtm->mm;
+                $this->ss    = $pyrtm->ss;
+                if ($zda->year != "" && $zda->month != ""&& $zda->day != "" && $zda->hh != "0" && $zda->mm != "0" && $zda->ss != "0" || $zda->year != "1999" && $zda->month != "11" && $zda->day != "30") {
+                    break;
+                }
+            } elseif (preg_match('/^\$.{2}RMC$/', $NavRec[0])) {
+                $rmc->init($NavRec);
+                $this->year  = $rmc->year;
+                $this->month = $rmc->month;
+                $this->day   = $rmc->day;
+                $this->hh    = $rmc->hh;
+                $this->mm    = $rmc->mm;
+                $this->ss    = $rmc->ss;
+                // $date_format = "%4d-%02d-%02dT%02d:%02d:%02dZ";
+                // echo "rmc: ", sprintf(
+                //     $date_format, $rmc->year, $rmc->month, $rmc->day, 
+                //     $rmc->hh, $rmc->mm, $rmc->ss
+                // ),"\n";   
+                if ($zda->year != "" && $zda->month != ""&& $zda->day != "" && $zda->hh != "0" && $zda->mm != "0" && $zda->ss != "0" || $zda->year != "1999" && $zda->month != "11" && $zda->day != "30") {
+                    break;
+                }
             } // end if ZDA
             
         } // end while (!feof($fid))
@@ -848,6 +971,7 @@ class DateTimeSimple
         $nmea = new NMEA0183Message();
         $zda = new NMEA0183_ZDA();
         $unixd = new NMEA0183_UNIXD();
+        $unixd = new UHDAS_PYRTM();
         $rmc = new NMEA0183_RMC();
         
         $line = '';
@@ -866,9 +990,7 @@ class DateTimeSimple
                     $line = $newline;
                     $nmea->init($line);
                     $NavRec = preg_split('/\,/', $nmea->data);
-                    if (preg_match('/^\$.{2}ZDA$/', $NavRec[0]) 
-                        && count($NavRec) >= 6
-                    ) { 
+                    if (preg_match('/^\$.{2}ZDA$/', $NavRec[0]) && count($NavRec) >= 6) { 
                         $zda->init($NavRec);
                         $this->year  = $zda->year;
                         $this->month = $zda->month;
@@ -881,12 +1003,11 @@ class DateTimeSimple
                         //     $date_format, $zda->year, $zda->month, $zda->day, 
                         //     $zda->hh, $zda->mm, $zda->ss
                         // ),"\n";   
-						if ($zda->year != "" && $zda->month != ""&& $zda->day != "" && $zda->hh != "0" && $zda->mm != "0" && $zda->ss != "0") {
-							break;
-						}
-				
-                    } else {
-                        if (preg_match('/^\$UNIXD$/', $NavRec[0])) {
+                        if ($zda->year != "" && $zda->month != ""&& $zda->day != "" && $zda->hh != "0" && $zda->mm != "0" && $zda->ss != "0") {
+                            break;
+                        }
+
+                    } elseif (preg_match('/^\$UNIXD$/', $NavRec[0])) {
                             $unixd->init($baseyear, $NavRec);
                             $this->year  = $unixd->year;
                             $this->month = $unixd->month;
@@ -895,12 +1016,23 @@ class DateTimeSimple
                             $this->mm    = $unixd->mm;
                             $this->ss    = $unixd->ss;
 
-							if ($zda->year != "" && $zda->month != ""&& $zda->day != "" && $zda->hh != "0" && $zda->mm != "0" && $zda->ss != "0") {
-								break;
-							}
+                            if ($zda->year != "" && $zda->month != ""&& $zda->day != "" && $zda->hh != "0" && $zda->mm != "0" && $zda->ss != "0") {
+                                break;
+                            }
+                    } elseif (preg_match('/^\$PYRTM$/', $NavRec[0])) {
+                            $pyrtm->init($NavRec);
+                            $this->year  = $pyrtm->year;
+                            $this->month = $pyrtm->month;
+                            $this->day   = $pyrtm->day;
+                            $this->hh    = $pyrtm->hh;
+                            $this->mm    = $pyrtm->mm;
+                            $this->ss    = $pyrtm->ss;
 
-                        } else {
-                            if (preg_match('/^\$.{2}RMC$/', $NavRec[0])) {
+                            if ($zda->year != "" && $zda->month != ""&& $zda->day != "" && $zda->hh != "0" && $zda->mm != "0" && $zda->ss != "0") {
+                                break;
+                            }
+
+                    } else if (preg_match('/^\$.{2}RMC$/', $NavRec[0])) {
                                 $rmc->init($NavRec);
                                 $this->year  = $rmc->year;
                                 $this->month = $rmc->month;
@@ -913,12 +1045,10 @@ class DateTimeSimple
                                 // $date_format, $rmc->year, $rmc->month, $rmc->day,
                                 // $rmc->hh, $rmc->mm, $rmc->ss
                                 // ), "\n";   
-								if ($zda->year != "" && $zda->month != ""&& $zda->day != "" && $zda->hh != "0" && $zda->mm != "0" && $zda->ss != "0") {
-									break;
-								}
-                            } // end if RMC
-                        } // end if UNIXD
-                    } // end if ZDA
+                                if ($zda->year != "" && $zda->month != ""&& $zda->day != "" && $zda->hh != "0" && $zda->mm != "0" && $zda->ss != "0") {
+                                    break;
+                                }
+                    } // end checking string type
                     
                     // Reset $line:
                     $line = $char;

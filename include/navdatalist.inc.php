@@ -2603,6 +2603,97 @@ function navdatalist(
             } // end if no nav file found
             break;
             
+        case "nav31":  // UNIXD decimal day    
+            
+            // Initialize the row index for the table of nav files.  The table will 
+            // contain the start and end times of the data within each file and the 
+            // filename.  The table will be sorted from earliest to latest start
+            // times.
+            $inx = 0;
+            while (false !== ($file = readdir($handle))) {
+                
+                if ($file != "." && $file != "..") {
+                    
+                    $filename = $file;
+                    $cmd_str_unixd = "( head $path/$filename | grep \"PYRTM\" |"
+                        . " head -1 ) 2> /dev/null";
+                    exec($cmd_str_unixd, $result, $ret_status);
+                    
+                    if ($result[0]) {
+                        
+                        //	echo "$filename: $result[0]\n";
+                        unset($result);
+                        
+                        // Get first and last date/time strings in each file:
+                        $cmd_str1 = "( head $path/$filename | grep \"PYRTM\" | head -1 ) 2> /dev/null";
+                        exec($cmd_str1, $output, $ret_status);
+                        $pyrtm_start = new UHDAS_PYRTM();
+                        $pyrtm_start->init(preg_split('/\,/', $output[0]));
+                        $dateStringUTCStartFile = $pyrtm_start->time_stamp;
+                        unset($output);
+                        $cmd_str2 = "( tail $path/$filename | grep \"PYRTM\" | tail -1 ) 2> /dev/null";
+                        exec($cmd_str2, $output, $ret_status);
+                        $pyrtm_end = new UHDAS_PYRTM();
+                        $pyrtm_end->init(preg_split('/\,/', $output[0]));
+                        $dateStringUTCEndFile = $pyrtm_end->time_stamp;
+                        unset($output);
+                        
+                       // 	echo "$filename: $dateStringUTCStartFile "
+                       //      . "$dateStringUTCEndFile\n";
+                        
+
+                        // Check that the start/end date/times in each file overlap the 
+                        // start/end date/times entered on the command line:
+                        if (!( (strtotime($dateStringUTCEndFile) < strtotime($dateStringUTCStart) )
+                            || (strtotime($dateStringUTCStartFile) > strtotime($dateStringUTCEnd) ) )
+                        ) {  
+
+                            $table[$inx]["start"] = strtotime($dateStringUTCStartFile);
+                            $table[$inx]["end"]   = strtotime($dateStringUTCEndFile);
+                            $table[$inx]["file"]  = $filename;
+                            $inx++;
+
+                        } else {
+
+                            $otherParseableFiles[$jnx]["start"]
+                              = strtotime($dateStringUTCStartFile);
+                            $otherParseableFiles[$jnx]["end"]
+                                = strtotime($dateStringUTCEndFile);
+                            $otherParseableFiles[$jnx]["file"] = $filename;
+                            $jnx++;
+
+                        } // end if within bounds
+                        
+                    } // end if PYRTM message found
+                    
+                } // if file is not "." nor ".."
+                
+            } // end loop over files in dir
+            
+            // If table exists, sort in ascending order from earliest to 
+            // latest start date/time:
+            if ($table) {
+                sort($table);
+                
+                $tmp = preg_split("/-/", $dateStringUTCStart);
+                $baseyear = $tmp[0];
+                
+                $inxMax = count($table);
+                for ($inx=0; $inx<$inxMax; $inx++) {
+                    // Push filename onto array.
+                    $navfilelist[] = $table[$inx]["file"];
+                } // end loop over files in table
+                
+            } else {
+                
+                echo "navdatalist(): No files contain PYRTM decimal day strings "
+                    . "between $dateStringUTCStart and $dateStringUTCEnd.\n";
+                exit(1);
+                
+            } // end if $table
+            break;
+            
+            
         case "uhdas":  // UNIXD decimal day    
             
             // Initialize the row index for the table of nav files.  The table will 

@@ -1,0 +1,8 @@
+UNIXD - UHDAS UNIX Time
+
+Example Record: $PYRTM,2019,121.6666774,5.8859180
+
+where:
+    2019        Year
+    121.6666774 Decimal year
+    5.8859180   Decimal days since boot
