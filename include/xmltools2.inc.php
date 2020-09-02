@@ -307,7 +307,7 @@ function xml_write2($dataObject, $outfile, $xmlt_file = NULL) {
 
     // Add up all the test scores and assign a grade
     $tests_total = $tests_green + $tests_yellow + $tests_red;
-    if ($tests_total = $tests_green) {
+    if ($tests_total == $tests_green) {
         $rating_full = 'G';
     } elseif ($tests_red >= 1) {
         $rating_full = 'R';
