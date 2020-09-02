@@ -2670,27 +2670,6 @@ function navdatalist(
                 
             } // end loop over files in dir
             
-            // If table exists, sort in ascending order from earliest to 
-            // latest start date/time:
-            if ($table) {
-                sort($table);
-                
-                $tmp = preg_split("/-/", $dateStringUTCStart);
-                $baseyear = $tmp[0];
-                
-                $inxMax = count($table);
-                for ($inx=0; $inx<$inxMax; $inx++) {
-                    // Push filename onto array.
-                    $navfilelist[] = $table[$inx]["file"];
-                } // end loop over files in table
-                
-            } else {
-                
-                echo "navdatalist(): No files contain PYRTM decimal day strings "
-                    . "between $dateStringUTCStart and $dateStringUTCEnd.\n";
-                exit(1);
-                
-            } // end if $table
             break;
             
             
@@ -3026,6 +3005,7 @@ function navdatalist(
             . $otherNonParseableList;
         
     } // end if ($otherNonParseableFiles)
+
     
     return array($navfilelist, $feedback);
     
