@@ -2909,7 +2909,149 @@ function navdatalist(
                 
             } // end loop over files in dir
             break;
-            
+
+        case "metoc_nav":
+
+            // Initialize the row index for the table of nav files.  The table will
+            // contain the start and end times of the data within each file and the
+            // filename.  The table will be sorted from earliest to latest start
+            // times.
+            $inx = 0;
+            $jnx = 0;
+            while (false !== ($file = readdir($handle))) {
+
+                if ($file != "." && $file != "..") {
+
+                    if (preg_match("/dat$/", $file)) {
+
+                        $filename = $file;
+                        $fid = fopen($path . "/" . $filename, 'r');
+
+                        $recnum = 1;
+                        //----------- Loop Over Contents of Single File ----------//
+                        while (!feof($fid)) {
+
+                            // Get message:
+                            $line = trim(fgets($fid));
+
+                            // Grab date and time from first data record
+                            if ($recnum == 5) {
+
+                                $dateTimeRec = preg_split("/\s+/",trim(preg_split("/,/", $line)[0], "\""));
+
+                                $dateStr = strtotime($dateTimeRec[0]);
+
+                                $year  = date('Y', $dateStr);
+                                $month = date('m', $dateStr);
+                                $day   = date('d', $dateStr);
+
+                                $hhmmss = preg_split("/:/", $dateTimeRec[1]);
+
+                                // Decode the time and the time precision:
+                                $hour   = $hhmmss[0];
+                                $minute = $hhmmss[1];
+                                $second = $hhmmss[2];
+
+                                if (preg_match("/\./", $second)) {
+                                    $roz = preg_split('/\./', $second);
+                                    $tim_nroz = strlen($roz[1]);
+                                } else {
+                                    $tim_nroz = 0;
+                                }
+
+                                // Print exactly the same precision time stamp
+                                // as in the recorded data.
+                                if ($tim_nroz == 0) {
+                                    $time_format = "%4d-%02d-%02dT%02d:%02d:%02dZ";
+                                } else {
+                                    $time_format = "%4d-%02d-%02dT%02d:%02d:%0"
+                                        . ($tim_nroz + 3) . "." . $tim_nroz . "fZ";
+                                }
+
+                                $dateStringUTCStartFile = sprintf(
+                                    $time_format, $year, $month, $day,
+                                    $hour, $minute, $second
+                                );
+
+                                break;
+                            } else {
+                                $recnum++;
+                            }
+                        } // end loop over file
+
+                        // Grab last complete data record from file:
+                        rewind($fid);
+                        $line = trim(lastLine($fid, "\n"));
+
+                        fclose($fid);
+
+                        $dateTimeRec = preg_split("/\s+/",trim(preg_split("/,/", $line)[0], "\""));
+
+                        $dateStr = strtotime($dateTimeRec[0]);
+
+                        $year  = date('Y', $dateStr);
+                        $month = date('m', $dateStr);
+                        $day   = date('d', $dateStr);
+
+                        $hhmmss = preg_split("/:/", $dateTimeRec[1]);
+
+                        // Decode the time and the time precision:
+                        $hour   = $hhmmss[0];
+                        $minute = $hhmmss[1];
+                        $second = $hhmmss[2];
+
+                        if (preg_match("/\./", $second)) {
+                            $roz = preg_split('/\./', $second);
+                            $tim_nroz = strlen($roz[1]);
+                        } else {
+                            $tim_nroz = 0;
+                        }
+
+                        // Print exactly the same precision time stamp
+                        // as in the recorded data.
+                        if ($tim_nroz == 0) {
+                            $time_format = "%4d-%02d-%02dT%02d:%02d:%02dZ";
+                        } else {
+                            $time_format = "%4d-%02d-%02dT%02d:%02d:%0"
+                                . ($tim_nroz + 3) . "." . $tim_nroz . "fZ";
+                        }
+
+                        $dateStringUTCEndFile = sprintf(
+                            $time_format, $year, $month, $day,
+                            $hour, $minute, $second
+                        );
+
+                        // Check that the start/end date/times in each file overlap
+                        // the start/end date/times entered on the command line:
+                        if (!( (strtotime($dateStringUTCEndFile) < strtotime($dateStringUTCStart) )
+                            || (strtotime($dateStringUTCStartFile) > strtotime($dateStringUTCEnd) ) )
+                        ) {
+
+                            $table[$inx]["start"]
+                                = strtotime($dateStringUTCStartFile);
+                            $table[$inx]["end"]   = strtotime($dateStringUTCEndFile);
+                            $table[$inx]["file"]  = $filename;
+                            $inx++;
+
+                        } else {
+
+                            $otherParseableFiles[$jnx]["start"]
+                                = strtotime($dateStringUTCStartFile);
+                            $otherParseableFiles[$jnx]["end"]
+                                = strtotime($dateStringUTCEndFile);
+                            $otherParseableFiles[$jnx]["file"] = $filename;
+                            $jnx++;
+
+                        } // end if within bounds
+
+                    } // end if met file
+
+                } // if file is not "." nor ".."
+
+            } // end loop over files in dir
+            break;
+
+
         default:
             echo "navdatalist(): Unsupported input file format: ", 
                 $inputFormatSpec, "\n";
