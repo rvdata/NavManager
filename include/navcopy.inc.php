@@ -6603,6 +6603,7 @@ function navcopy($inputFormatSpec, $path, $navfilelist, $outfile)
         } // end if (isset())
         break;
 
+    case "nav30":
     case "nav32":
 
         include('parsers/nav32.php');

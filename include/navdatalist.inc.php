@@ -415,6 +415,9 @@ function navdatalist(
             // "nav18": DAS: WHOI Calliope (2009)
             // Vessels: Oceanus
         case "nav18":
+        // "nav30": DAS:  openrvdas
+        // Vessels: Palmer & Gould
+        case "nav30":
         // "nav32": DAS: RCRV
         // Vessels: Rachel Carson
         case "nav32":
