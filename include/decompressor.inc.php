@@ -60,6 +60,7 @@ function decompressor($path, $tempdir)
                 case "BZ2":
                 case "gz":   // compression by gzip
                 case "GZ":
+                case "tz":
                     $has_compressed_files = true;
                     break;
                     
@@ -153,6 +154,11 @@ function decompressor($path, $tempdir)
                         case "gz":   // compression by gzip
                             echo "Uncompressing file: $file\n";
                             $cmd_str = "gunzip -f $file";
+                            break;
+                            
+                        case "tz":   // compression by gzip
+                            echo "Uncompressing file: $file\n";
+                            $cmd_str = "tar -xzf $file";
                             break;
                             
                         default:
