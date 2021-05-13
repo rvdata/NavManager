@@ -1,0 +1,28 @@
+\contentsline {section}{\numberline {1}Introduction}{1}
+\contentsline {section}{\numberline {2}Installation}{2}
+\contentsline {subsection}{Requirements}{2}
+\contentsline {subsection}{Where to get the current version}{2}
+\contentsline {subsection}{Install NavManager}{2}
+\contentsline {subsection}{Directory Structure}{4}
+\contentsline {section}{\numberline {3}Processing Your Data}{5}
+\contentsline {subsection}{Currently supported formats}{5}
+\contentsline {subsection}{Getting your dataset into the r2rnav format: navcopy}{5}
+\contentsline {subsection}{Determining the bounds of your dataset: navinfo}{6}
+\contentsline {subsection}{Getting quality assessment info about your dataset: navqa}{6}
+\contentsline {section}{\numberline {4}Producing Data Products}{8}
+\contentsline {subsection}{Quality Controlled Products: navqc}{8}
+\contentsline {subsection}{Downsampling your dataset}{9}
+\contentsline {subsection}{Computing Speed Over Ground (SOG) and Course Over Ground(COG)}{9}
+\contentsline {subsection}{Plotting your dataset on a map}{10}
+\contentsline {section}{\numberline {5}Creating a Custom Parser}{11}
+\contentsline {subsection}{Requirements of your dataset}{11}
+\contentsline {subsection}{Required additions to the code}{11}
+\contentsline {subsection}{Existing resources}{11}
+\contentsline {section}{\numberline {6}Troubleshooting}{12}
+\contentsline {subsection}{Percent completeness errors}{12}
+\contentsline {subsection}{Data gaps}{12}
+\contentsline {section}{\numberline {7}References}{13}
+\contentsline {subsection}{The r2rnav Format}{13}
+\contentsline {subsection}{NMEA Strings}{13}
+\contentsline {subsection}{Format Best Practices}{13}
+\contentsline {subsection}{Generic Mapping Tools (GMT)}{13}
