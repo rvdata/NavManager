@@ -1,0 +1,86 @@
+File Format ID: nav29
+
+Data Format Description:
+The file contains GGA, VTG, and ZDA strings, alternating line-by-line,
+preceeded by decimal unix system timestamps.  Definitions follow.
+
+Definition of Unix time:
+    Decimal seconds since 00:00:00 UTC - January 1, 1970 (minus leap seconds)
+
+Definition of GGA:
+GGA - essential fix data which provide 3D location and quality data.
+
+Example Record: $GPGGA,123519,4807.038,N,01131.000,E,1,08,0.9,545.4,M,46.9,M,,*47
+
+where:
+     GGA          Global Positioning System Fix Data
+     123519       Fix taken at 12:35:19 UTC
+     4807.038,N   Latitude 48 degrees 07.038 minutes North
+     01131.000,E  Longitude 11 degrees 31.000 minutes East
+     1            Fix quality: 0 = fix not available or invalid
+                               1 = GPS Standard Positioning Service (SPS) mode, fix valid
+                               2 = differential GPS (DGPS), SPS mode, fix valid
+                               3 = GPS Precise Point Positioning (PPS) mode, fix valid
+			       4 = Real Time Kinematic (RTK). Satellite system used in 
+                                    RTK mode with fixed integers.
+			       5 = Float RTK.  Satellite system used in RTK mode with 
+                                    floating integers.
+                               6 = Estimated (dead reckoning) mode
+			       7 = Manual input mode
+			       8 = Simulator mode
+     08           Number of satellites being tracked
+     0.9          Horizontal dilution of precision (HDOP)
+     545.4,M      Altitude above mean sea level [meters]
+     46.9,M       Height of geoid (mean sea level) above WGS84
+                      ellipsoid [meters]
+     (empty field) Time in seconds since last DGPS update
+     (empty field) DGPS station ID number
+     *47          Checksum, always begins with *
+
+If the height of geoid is missing then the altitude should be suspect. Some 
+non-standard implementations report altitude with respect to the ellipsoid 
+rather than geoid altitude. Some units do not report negative altitudes at 
+all. This is the only sentence that reports altitude. 
+
+Definition of ZDA:
+ZDA - Date and Time
+
+Example Record: $GPZDA,201530.18,04,07,2002,01,00*60
+
+where:
+     201530.18  hours, minutes, and seconds expressed as hhmmss.ss
+                 20       2-digit hour [24 hour clock]
+                 15       2-digit minute 
+                 30.18    decimal seconds
+     04         2-digit day, 
+     07         2-digit month
+     2002       4-digit year
+     01         2-digit local timezone hours: -13 to 13
+     00         2-digit local timezone minutes: 0 to 59
+     *60        Checksum, begins with *
+
+Definition of VTG:
+VTG - Velocity made good. The gps receiver may use the LC prefix instead of GP 
+if it is emulating Loran output.
+
+Example Record: $GPVTG,054.7,T,034.4,M,005.5,N,010.2,K*48
+
+where:
+     VTG        Track made good and ground speed
+     054.7,T    True track made good [degrees, clockwise from North]
+     034.4,M    Magnetic track made good
+     005.5,N    Ground speed [knots]
+     010.2,K    Ground speed [kilometers per hour]
+     *48        Checksum, begins with *
+
+Example Content:
+1531596045.688 $INZDA,192045.68,14,07,2018,,*7A
+1531596045.718 $INGGA,192045.68,4437.541871,N,12402.686139,W,2,07,1.3,-4.31,M,-22.07,M,2.0,0135*4B
+1531596045.758 $INGLL,4437.541871,N,12402.686139,W,192045.68,A,D*67
+1531596045.788 $INVTG,351.57,T,336.35,M,0.0,N,0.0,K,D*33
+1531596045.808 $INRMC,192045.68,A,4437.541871,N,12402.686139,W,0.0,351.57,140718,15.2,E,D*33
+1531596045.848 $GPGSA,M,3,24,06,17,02,19,12,25,,,,,,2.1,1.3,1.7*31
+1531596045.878 $INHDT,111.42,T*12
+1531596045.888 $PSXN,20,0,0,0,0*3B
+
+References: www.nmea.org

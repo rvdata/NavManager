@@ -1,0 +1,21 @@
+C-Nav3050.txt
+
+C-Nav3050 Globally Corrected Global Positioning System (GcGPS). Antenna located on main mast.
+C-Nav Subscription Services were active for this entire cruise.
+
+
+Sample rate: 1 per second
+
+Example data lines:
+gnss_cnav  2014-12-11T00:00:01.0020Z  $GNZDA,000001.00,11,12,2014,00,00*7D
+gnss_cnav  2014-12-11T00:00:01.0811Z  $GNRMC,000001.00,A,2304.167961,N,16553.836924,W,7.87,100.6,111214,0,E,D*17
+gnss_cnav  2014-12-11T00:00:01.1226Z  $GNVTG,100.6,T,,M,7.87,N,14.57,K,D*2E
+gnss_cnav  2014-12-11T00:00:01.1630Z  $PNCTR,NAVQ,000001.00,3D,SBAS,DUAL*38
+gnss_cnav  2014-12-11T00:00:01.2517Z  $GNGGA,000001.00,2304.167961,N,16553.836924,W,2,11,1.0,44.542,M,0.000,M,2.0,0103*43
+gnss_cnav  2014-12-11T00:00:01.3251Z  $GNGST,000001.00,2.0309,3.5667,3.1000,89.3421,3.1001,3.5666,7.2710*46
+gnss_cnav  2014-12-11T00:00:01.3611Z  $PNCTR,RXQ,000001,N,0.00,0,100*50
+
+Field Descriptions:
+Logger ID
+Time Stamp [UTC]
+NMEA ASCII message
