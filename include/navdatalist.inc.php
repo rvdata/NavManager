@@ -3155,7 +3155,23 @@ function navdatalist(
     } // end if ($otherNonParseableFiles)
 
 
-    return array($navfilelist, $feedback);
+    if ($report) {
+        // Report on (1) Gaps between parseable files that last longer
+        // than 12 hours, (2) Files that could not be parsed, and/or
+        // (3) Files that could be parsed, but do not fall within the
+        // cruise start/end dates.
+        foreach ($report as $statement) {
+            echo $statement,"\n";
+        }   
+    }
+
+
+    $datalist_report = [];
+    $datalist_report['datalist'] = $table;
+    $datalist_report['otherParseableFiles'] = $otherParseableFiles;
+    $datalist_report['otherNonParseableFiles'] = $otherNonParseableFiles;
+
+    return $datalist_report;
 
 } // end function navdatalist()
 ?>

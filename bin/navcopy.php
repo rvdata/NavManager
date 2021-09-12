@@ -97,23 +97,14 @@ if ($syntaxErr != "") {
             }
         } else {
 
-            list($filelistNavigationRaw, $report)
-                = @navdatalist(
-                    $r2rnav_file_format,
-                    $dateStringUTCStart,
-                    $dateStringUTCEnd,
-                    $pathNavigationRaw
-                );
+            $datalist_report = @navdatalist(
+                $r2rnav_file_format,
+                $dateStringUTCStart,
+                $dateStringUTCEnd,
+                $pathNavigationRaw
+            );
 
-            if ($report) {
-                // Report on (1) Gaps between parseable files that last longer
-                // than 12 hours, (2) Files that could not be parsed, and/or 
-                // (3) Files that could be parsed, but do not fall within the
-                // cruise start/end dates.
-                foreach ($report as $statement) {
-                    echo $statement,"\n";
-                }
-            }
+            $filelistNavigationRaw = $datalist_report['filelistNavigationRaw'];
 
             echo "navdatalist(): Done.\n";
             echo "\n";
