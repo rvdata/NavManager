@@ -16,12 +16,12 @@ function xml_write2($dataObject, $outfile, $xmlt_file = NULL) {
        $xpath = new DOMXPath($doc);
        $certificate = $xpath->query("//r2r:certificate")->item(0);
        $rating_element = $xpath->query("//r2r:certificate/r2r:rating")->item(0);
-       $filesetinfo_supplementals = $xpath->query("//r2r:filesetinfo_supplementals")->item(0);
+       $filesetinfo_supplements = $xpath->query("//r2r:filesetinfo_supplements")->item(0);
     } else {
        $certificate = $doc->createElement("r2r:certificate");
        $doc->appendChild($certificate);
        $rating_element = $certificate->appendChild($doc->createElement("r2r:rating"));
-       $filesetinfo_supplementals = $doc->createElement("r2r:filesetinfo_supplementals");
+       $filesetinfo_supplements = $doc->createElement("r2r:filesetinfo_supplements");
     }
 
     $xpath = new DOMXPath($doc);
@@ -368,7 +368,7 @@ function xml_write2($dataObject, $outfile, $xmlt_file = NULL) {
     $ranges->appendChild($max);
     $info->appendChild($ranges);
 
-    $filesetinfo_supplementals->appendChild($info);
+    $filesetinfo_supplements->appendChild($info);
 
     // HDOP
     $info = $doc->createElement("r2r:filesetinfo_supplemental");
@@ -386,7 +386,7 @@ function xml_write2($dataObject, $outfile, $xmlt_file = NULL) {
     $ranges->appendChild($max);
     $info->appendChild($ranges);
 
-    $filesetinfo_supplementals->appendChild($info);
+    $filesetinfo_supplements->appendChild($info);
 
     // Altitude
     $info = $doc->createElement("r2r:filesetinfo_supplemental");
@@ -404,7 +404,7 @@ function xml_write2($dataObject, $outfile, $xmlt_file = NULL) {
     $ranges->appendChild($max);
     $info->appendChild($ranges);
 
-    $filesetinfo_supplementals->appendChild($info);
+    $filesetinfo_supplements->appendChild($info);
 
     // HorizontalSpeed
     $info = $doc->createElement("r2r:filesetinfo_supplemental");
@@ -422,7 +422,7 @@ function xml_write2($dataObject, $outfile, $xmlt_file = NULL) {
     $ranges->appendChild($max);
     $info->appendChild($ranges);
 
-    $filesetinfo_supplementals->appendChild($info);
+    $filesetinfo_supplements->appendChild($info);
 
     // HorizontalAcceleration
     $info = $doc->createElement("r2r:filesetinfo_supplemental");
@@ -440,7 +440,7 @@ function xml_write2($dataObject, $outfile, $xmlt_file = NULL) {
     $ranges->appendChild($max);
     $info->appendChild($ranges);
 
-    $filesetinfo_supplementals->appendChild($info);
+    $filesetinfo_supplements->appendChild($info);
 
     // Write the conents to the file
     $doc->save($outfile);
