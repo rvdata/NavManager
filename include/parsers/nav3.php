@@ -19,7 +19,7 @@ function parse_nav3($navfilelist, $datapath, $fout) {
         //     $line = trim( fgets($fin) );
         if ($line == "") break;
         $lineRec = preg_split("/[\s]+/", $line);
-        $filename = $path . "/" . $lineRec[0];
+        $filename = $datapath . "/" . $lineRec[0];
         $fid = fopen($filename, 'r');
 
         //----------- Loop Over Contents of Single File ----------//

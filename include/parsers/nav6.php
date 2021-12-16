@@ -8,7 +8,7 @@ function parse_nav6($navfilelist, $datapath, $fout) {
 
         // $line = trim( fgets($fin) );
         if ($line == "") break;
-        $filename = $path . "/" . $line;
+        $filename = $datapath . "/" . $line;
         $fid = fopen($filename, 'r');
 
         // Initialize variables:

@@ -22,7 +22,7 @@ function parse_nav1($navfilelist, $datapath, $fout) {
 
         //      $line = trim( fgets($fin) );
         if ($line == "") break;
-        $filename = $path . "/" . $line;
+        $filename = $datapath . "/" . $line;
         //     echo "Reading " . $filename . "\n";
         $fid = fopen($filename, 'r');
 

@@ -104,7 +104,11 @@ if ($syntaxErr != "") {
                 $pathNavigationRaw
             );
 
-            $filelistNavigationRaw = $datalist_report['filelistNavigationRaw'];
+            #$filelistNavigationRaw = $datalist_report['filelistNavigationRaw'];
+            $filelistNavigationRaw = []; 
+            foreach($datalist_report['datalist'] as $datalist_entry) {
+                array_push($filelistNavigationRaw, $datalist_entry['file']);
+            }
 
             echo "navdatalist(): Done.\n";
             echo "\n";
@@ -114,7 +118,6 @@ if ($syntaxErr != "") {
 			echo "ERROR: No files to process, exiting.\n\n";
             exit(1);
 		}
-
 	//----- Convert primary raw navigation data into R2R standard format -----//
 
 	echo "Running navcopy() with:\n";
@@ -126,7 +129,7 @@ if ($syntaxErr != "") {
 	}   
 	echo "\tOutput file:       ", $navBestResPreQC, "\n";
 
-	navcopy(
+	@navcopy(
 		$r2rnav_file_format, 
 		$pathNavigationRaw, 
 		$filelistNavigationRaw, 

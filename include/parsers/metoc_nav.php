@@ -14,7 +14,7 @@ function parse_metoc_nav($navfilelist, $datapath, $fout) {
 
         // $line = trim( fgets($fin) );
         if ($line == "") break;
-        $filename = $path . "/" . $line;
+        $filename = $datapath . "/" . $line;
         $fid = fopen($filename, 'r');
 
         $recnum = 1;

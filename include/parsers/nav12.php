@@ -33,7 +33,7 @@ function parse_nav12($navfilelist, $datapath, $fout) {
 
         //      $line = trim( fgets($fin) );
         if ($line == "") break;
-        $filename = $path . "/" . $line;
+        $filename = $datapath . "/" . $line;
         //     echo "Reading " . $filename . "\n";
 
         // Check for presence of ZDA message:

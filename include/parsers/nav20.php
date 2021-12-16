@@ -24,7 +24,7 @@ function parse_nav20($navfilelist, $datapath, $fout) {
 
         //      $line = trim( fgets($fin) );
         if ($line == "") break;
-        $filename = $path . "/" . $line;
+        $filename = $datapath . "/" . $line;
         //     echo "Reading " . $filename . "\n";
         $fid = fopen($filename, 'r');
 
@@ -440,7 +440,6 @@ function parse_nav20($navfilelist, $datapath, $fout) {
         $binx = 1;
 
     } // end if (isset())
-    break;
 
 }
 ?>
