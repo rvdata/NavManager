@@ -31,7 +31,7 @@ public class navsimplifier {
 			//int i = 0;
 			String line;
 			while( (line=fileIn.readLine()) != null) {
-			    if (!line.startsWith("//")) {  // Skip header records
+			    if (!line.startsWith("//") && !line.startsWith("#") && !line.startsWith(">")) {  // Skip header records
 				String[] st = line.split("\t");
 				String label = st[0];
 				double lon = Double.parseDouble(st[1]);
