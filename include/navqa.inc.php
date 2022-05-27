@@ -714,9 +714,9 @@ function navqa(
                 
                 if (count($dataRec) >= 6) {
                   
-                    // GPS Quality Indicator: 1=valid, 2=DGPS, 5=RTK
+                    // GPS Quality Indicator: 1=valid, 2=DGPS, 4=RTK(int), 5=RTK(float)
                     // everything else is bad.
-                    if ($qual[$binx]!=1 && $qual[$binx]!=2 && $qual[$binx] !=5) {
+                    if ($qual[$binx]!=1 && $qual[$binx]!=2 && $qual[$binx] !=4 && $qual[$binx] !=5) {
                         $stats->numBadQualityGPS++;
                     }
                     if ($qual[$binx] == "NAN") {
