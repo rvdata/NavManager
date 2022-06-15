@@ -97,36 +97,40 @@ function parse_metoc_nav($navfilelist, $datapath, $fout) {
 
                     $datestamp = sprintf($time_format, $year, $month, $day, $hour, $minute, $second);
 
-                    $lat = floatval(trim($records[$lat_col_num], "\""));
-                    $lon = floatval(trim($records[$lon_col_num], "\""));
-
                     if ( 6 == 9 ) {
 
-                    $lat_deg = floatval(trim($records[$lat_deg_col_num], "\""));
-                    $lat_min = floatval(trim($records[$lat_min_col_num], "\""));
-                    $lat = $lat_deg + ($lat_min/60);
+                        $lat = floatval(trim($records[$lat_col_num], "\""));
+                        $lon = floatval(trim($records[$lon_col_num], "\""));
 
-                    if (preg_match('/\./', $lat_min)) {
-                        $roz = preg_split('/\./', $lat_min);
-                        $lat_nroz = strlen($roz[1]);
+                    } elseif ( 9 == 9 ) {
+
+                        $lat_deg = floatval(trim($records[$lat_deg_col_num], "\""));
+                        $lat_min = floatval(trim($records[$lat_min_col_num], "\""));
+                        $lat = $lat_deg + ($lat_min/60);
+
+                        if (preg_match('/\./', $lat_min)) {
+                            $roz = preg_split('/\./', $lat_min);
+                            $lat_nroz = strlen($roz[1]);
+                        } else {
+                            $lat_nroz = 0;
+                        }
+                        $lat_format = "%." . ($lat_nroz + 2) . "f";
+
+                        $lon_deg = floatval(trim($records[$lon_deg_col_num], "\""));
+                        $lon_min = floatval(trim($records[$lon_min_col_num], "\""));
+                        $lon = $lon_deg + ($lon_min/60);
+
+
+                        if (preg_match('/\./', $lon_min)) {
+                            $roz = preg_split('/\./', $lon_min);
+                            $lon_nroz = strlen($roz[1]);
+                        } else {
+                            $lon_nroz = 0;
+                        }
+                        $lon_format = "%." . ($lon_nroz + 2) . "f";
+
                     } else {
-                        $lat_nroz = 0;
-                    }
-                    $lat_format = "%." . ($lat_nroz + 2) . "f";
-
-                    $lon_deg = floatval(trim($records[$lon_deg_col_num], "\""));
-                    $lon_min = floatval(trim($records[$lon_min_col_num], "\""));
-                    $lon = $lon_deg + ($lon_min/60);
-
-
-                    if (preg_match('/\./', $lon_min)) {
-                        $roz = preg_split('/\./', $lon_min);
-                        $lon_nroz = strlen($roz[1]);
-                    } else {
-                        $lon_nroz = 0;
-                    }
-                    $lon_format = "%." . ($lon_nroz + 2) . "f";
-
+                        die('Need to pick between the degree or degree-minute columns');
                     }
 
                     $lat_format = '%s';
