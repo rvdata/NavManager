@@ -65,7 +65,7 @@ function navsogcog($infile, $outfile, $flog = null)
     }
 
     //----- Begin Initialize Variables -----//
-    $maxBuffer = 3600;  // Max number of elements array can hold  
+    $maxBuffer = 86400;  // Max number of elements array can hold  
     
     $datagram = array();
     $epochOK = array();
