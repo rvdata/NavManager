@@ -736,9 +736,9 @@ function navcopy($inputFormatSpec, $path, $navfilelist, $outfile)
     // Vessels: Healy, Marcus G. Langseth
     case "nav12":
 
-        include('parsers/nav13.php');
+        include('parsers/nav12.php');
 
-        parse_nav13($navfilelist, $path, $fout);
+        parse_nav12($navfilelist, $path, $fout);
 
         break;
 
