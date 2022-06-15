@@ -157,7 +157,8 @@ function parse_nav20($navfilelist, $datapath, $fout) {
                         } // end if $binx < $maxBuffer
 
                         // Or do we have a ZDA date/time stamp?
-                    } else if ( preg_match('/^\$.{2}ZDA$/', $NavRec[0]) ) {
+                    } else if ( False ) {
+                    #} else if ( preg_match('/^\$.{2}ZDA$/', $NavRec[0]) ) {
 
                         // echo "Found ZDA.\n";
                         // Process NMEA message as a ZDA date/time stamp:
@@ -264,7 +265,7 @@ function parse_nav20($navfilelist, $datapath, $fout) {
                         // (2) Print GPS buffer (all GGA messages dated)
                         // (3) Unset GPS buffer
                         $inx = 1;
-                        $inxMax = count($gpsBuffer);
+                        $inxMax = count(array($gpsBuffer));
                         while ($inx <= $inxMax
                             && ($gpsBuffer[$inx]->gga->hhmmss <= $rmc->hhmmss)
                         ) {
@@ -276,7 +277,7 @@ function parse_nav20($navfilelist, $datapath, $fout) {
                         }
                         if ($inx > 1) {
 
-                            $jnxMax = count($gpsBuffer);
+                            $jnxMax = count(array($gpsBuffer));
                             for ($jnx=$inx; $jnx<=$jnxMax; $jnx++) {
 
                                 if ($gpsBuffer[$jnx]->gga->hhmmss > $gpsBuffer[$jnx-1]->gga->hhmmss) {
@@ -301,7 +302,7 @@ function parse_nav20($navfilelist, $datapath, $fout) {
 
                         } else { // GGA belongs to previous day
 
-                            $jnxMax = count($gpsBuffer);
+                            $jnxMax = count(array($gpsBuffer));
                             for ($jnx=$jnxMax; $jnx>=1; $jnx--) {
 
                                 if ($gpsBuffer[$jnx]->gga->hhmmss <= $rmc->hhmmss) { // GGA same day as RMC
@@ -327,7 +328,7 @@ function parse_nav20($navfilelist, $datapath, $fout) {
                         } // end if ($inx > 1)
 
                         // Print buffer with dated-GGAs:
-                        $linx = count($gpsBuffer);
+                        $linx = count(array($gpsBuffer));
                         for ($inx=1; $inx<=$linx; $inx++) {
                             printBuffer($fout, $gpsBuffer, $inx);
                         }
