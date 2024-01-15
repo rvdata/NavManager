@@ -164,7 +164,6 @@ function navcopy($inputFormatSpec, $path, $navfilelist, $outfile)
         echo "navcopy(): Could not open file: " . $outfile . "\n";
         exit(1);
     }
-
     switch ($inputFormatSpec) {
 
     // "nav1": raw NMEA: GGA + ZDA
@@ -4094,6 +4093,14 @@ function navcopy($inputFormatSpec, $path, $navfilelist, $outfile)
             $binx = 1;
 
         } // end if (isset())
+        break;
+
+    // "nav33": Why is the code inline here for all the other parsers?? Should be in parsers/navxx.php
+    // Vessels: FKt
+    case "nav33":
+        include_once('parsers/nav33.php');
+        print " Running with nav33 format\n";
+        parse_nav33($navfilelist, $path, $fout);
         break;
 
     case "siomet":
