@@ -420,6 +420,19 @@ function navdatalist(
         case "nav30":
         // "nav32": DAS: RCRV
         // Vessels: Rachel Carson
+
+        ##################################################
+        ##################################################
+        case "nav33":
+            // "nav33": 
+            // Vessels: FKt
+            include('parsers/nav33.php');
+            $table= make_list_nav33($handle, $inputFormatSpec, $dateStringUTCStart, $dateStringUTCEnd, $path);             
+            break;
+
+        ##################################################
+        ##################################################
+          
         case "nav32":
 
             $date_format = "%4d-%02d-%02dT%02d:%02d:%02dZ";
@@ -512,7 +525,7 @@ function navdatalist(
                         } else {
 
                             $otherParseableFiles[$jnx]["start"]
-                                = strtotime($dateStringUTCStartFile);
+                                = strtotime($dateStringUTCStartFile); 
                             $otherParseableFiles[$jnx]["end"]
                                 = strtotime($dateStringUTCEndFile);
                             $otherParseableFiles[$jnx]["file"] = $filename;
