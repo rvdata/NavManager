@@ -1,0 +1,4 @@
+
+SIO Met System CSV files.  Full format description can be found here:
+
+https://service.rvdata.us/info/format/100039/MetAcq.pdf
