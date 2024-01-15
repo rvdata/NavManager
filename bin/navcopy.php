@@ -146,7 +146,7 @@ if ($syntaxErr != "") {
 function usage() 
 {
     echo "\n";
-    echo "Program: navcopy.php\nVersion: 0.9 \"Shark Bait\"\nAuthors: Aaron Sweeney, Chris Olson\n";
+    echo "Program: navcopy.php\nVersion: 1.0 \" \"\nAuthors: Aaron Sweeney, Chris Olson, Dru Clark\n";
     echo "Rolling Deck To Repository (R2R): Navigation Manager\n";
     echo "Purpose: Convert raw nav data to the r2rnav standard format.\n";
     echo "\n";
