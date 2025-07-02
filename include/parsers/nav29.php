@@ -39,7 +39,21 @@ function parse_nav29($navfilelist, $datapath, $fout) {
         while (!feof($fid)) {
 
             // Get NMEA message:
-            $line = preg_split("/\s+/", trim(fgets($fid)))[1];
+            //$line = preg_split("/\s+/", trim(fgets($fid)))[1];
+	    $fullLine = trim(fgets($fid));
+
+	    // Skip empty lines
+	    if ($fullLine === "") {
+		continue;
+	    }
+
+	    // Look for the first '$' which starts the NMEA sentence
+	    $dollarPos = strpos($fullLine, '$');
+	    if ($dollarPos === false) {
+	        continue; // Malformed line — no NMEA message
+	    }
+
+	    $line = substr($fullLine, $dollarPos);
 
             // Check that the line contains one (and only one) NMEA message.
             // On rare occasions, the real-time data stream that created the
